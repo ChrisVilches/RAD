@@ -6,7 +6,7 @@ class CreateConnections < ActiveRecord::Migration[6.0]
       t.string :pass
       t.string :host
       t.string :port
-
+      t.references :project, foreign_key: true
       t.timestamps
     end
   end

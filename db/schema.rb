@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_16_174152) do
+ActiveRecord::Schema.define(version: 2019_10_16_165010) do
 
   create_table "connections", force: :cascade do |t|
     t.string "name"
@@ -18,9 +18,9 @@ ActiveRecord::Schema.define(version: 2019_10_16_174152) do
     t.string "pass"
     t.string "host"
     t.string "port"
+    t.integer "project_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "project_id"
     t.index ["project_id"], name: "index_connections_on_project_id"
   end
 
@@ -31,28 +31,31 @@ ActiveRecord::Schema.define(version: 2019_10_16_174152) do
   end
 
   create_table "queries", force: :cascade do |t|
-    t.string "code"
+    t.integer "execution_count", default: 0, null: false
+    t.decimal "average_time", default: "0.0"
+    t.date "last_execution"
+    t.boolean "active", default: true, null: false
+    t.integer "view_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "view_id"
-    t.json "config"
     t.index ["view_id"], name: "index_queries_on_view_id"
   end
 
   create_table "query_histories", force: :cascade do |t|
     t.string "comment"
+    t.integer "config_version"
+    t.json "content"
+    t.integer "query_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "query_id"
-    t.string "previous_content"
     t.index ["query_id"], name: "index_query_histories_on_query_id"
   end
 
   create_table "views", force: :cascade do |t|
     t.string "name"
+    t.integer "project_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "project_id"
     t.index ["project_id"], name: "index_views_on_project_id"
   end
 
