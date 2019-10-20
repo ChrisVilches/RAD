@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_16_165010) do
+ActiveRecord::Schema.define(version: 2019_10_20_145633) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "connections", force: :cascade do |t|
     t.string "name"
@@ -18,10 +21,34 @@ ActiveRecord::Schema.define(version: 2019_10_16_165010) do
     t.string "pass"
     t.string "host"
     t.string "port"
-    t.integer "project_id"
+    t.bigint "project_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["project_id"], name: "index_connections_on_project_id"
+  end
+
+  create_table "containers", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "elements", force: :cascade do |t|
+    t.integer "elementable_id"
+    t.string "elementable_type"
+    t.bigint "container_id"
+    t.boolean "required"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["container_id"], name: "index_elements_on_container_id"
+  end
+
+  create_table "numeric_inputs", force: :cascade do |t|
+    t.integer "number_set", null: false
+    t.float "min"
+    t.float "max"
+    t.float "excluded_values", default: [], array: true
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "projects", force: :cascade do |t|
@@ -35,7 +62,7 @@ ActiveRecord::Schema.define(version: 2019_10_16_165010) do
     t.decimal "average_time", default: "0.0"
     t.date "last_execution"
     t.boolean "active", default: true, null: false
-    t.integer "view_id", null: false
+    t.bigint "view_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["view_id"], name: "index_queries_on_view_id"
@@ -45,21 +72,27 @@ ActiveRecord::Schema.define(version: 2019_10_16_165010) do
     t.string "comment"
     t.integer "config_version"
     t.json "content"
-    t.integer "query_id"
+    t.bigint "query_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["query_id"], name: "index_query_histories_on_query_id"
   end
 
+  create_table "text_inputs", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "views", force: :cascade do |t|
     t.string "name"
-    t.integer "project_id"
+    t.bigint "project_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["project_id"], name: "index_views_on_project_id"
   end
 
   add_foreign_key "connections", "projects"
+  add_foreign_key "elements", "containers"
   add_foreign_key "queries", "views"
   add_foreign_key "query_histories", "queries"
   add_foreign_key "views", "projects"
