@@ -4,11 +4,11 @@ RSpec.describe "Container" do
   it "can contain elements correctly" do
     c = Container.new
 
-    text_input = TextInput.new
-    numeric_input = NumericInput.new
-
-    c.elements << Element.new(elementable: text_input)
-    c.elements << Element.new(elementable: numeric_input)
+    text_input = build :text_input
+    numeric_input = build :numeric_input
+    
+    c.elements << build(:element, elementable: text_input)
+    c.elements << build(:element, elementable: numeric_input)
     c.save!
     expect(c.elements.count).to eq 2
     expect(c.elements[0].elementable).to eq text_input
@@ -28,11 +28,11 @@ RSpec.describe "Container" do
   it "has a method that returns list of Element" do
     c = Container.new
 
-    text_input = TextInput.new
-    numeric_input = NumericInput.new
+    text_input = build :text_input
+    numeric_input = build :numeric_input
 
-    c.elements << Element.new(elementable: text_input)
-    c.elements << Element.new(elementable: numeric_input)
+    c.elements << build(:element, elementable: text_input)
+    c.elements << build(:element, elementable: numeric_input)
     c.save!
 
     expect(c.element_list.length).to be 2

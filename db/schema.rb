@@ -33,13 +33,13 @@ ActiveRecord::Schema.define(version: 2019_10_20_145633) do
   end
 
   create_table "elements", force: :cascade do |t|
-    t.integer "elementable_id"
-    t.string "elementable_type"
+    t.bigint "elementable_id", null: false
+    t.string "elementable_type", null: false
     t.bigint "container_id"
-    t.boolean "required"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["container_id"], name: "index_elements_on_container_id"
+    t.index ["elementable_id"], name: "index_elements_on_elementable_id"
   end
 
   create_table "numeric_inputs", force: :cascade do |t|
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2019_10_20_145633) do
     t.float "min"
     t.float "max"
     t.float "excluded_values", default: [], array: true
+    t.boolean "required", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -79,6 +80,11 @@ ActiveRecord::Schema.define(version: 2019_10_20_145633) do
   end
 
   create_table "text_inputs", force: :cascade do |t|
+    t.boolean "multiline", null: false
+    t.string "regex"
+    t.integer "min"
+    t.integer "max"
+    t.boolean "required", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

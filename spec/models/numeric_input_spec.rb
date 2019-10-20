@@ -85,6 +85,17 @@ RSpec.describe "NumericInput" do
         num.validate_input_value(3)
       }.to raise_error ActiveRecord::RecordInvalid
     end
+
+    it "validates correctly for required/not required cases" do
+      expect(build(:numeric_input, :decimal, required: true).validate_input_value(nil)).to be false
+      expect(build(:numeric_input, :decimal, required: false).validate_input_value(nil)).to be true
+    end
+
+    it "validates correctly for inputs that are not numeric" do
+      expect(build(:numeric_input, :decimal).validate_input_value("3434")).to be false
+      expect(build(:numeric_input, :decimal).validate_input_value(true)).to be false
+      expect(build(:numeric_input, :decimal).validate_input_value(3434)).to be true
+    end
   end
 
 

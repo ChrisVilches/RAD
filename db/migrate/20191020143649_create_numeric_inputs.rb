@@ -5,6 +5,7 @@ class CreateNumericInputs < ActiveRecord::Migration[6.0]
       t.float :min, null: true
       t.float :max, null: true
       t.float :excluded_values, array: true, default: '{}'
+      t.boolean :required, null: false
       t.timestamps
     end
   end

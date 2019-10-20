@@ -1,4 +1,6 @@
-class NumericInput < ApplicationRecord
+class NumericInput < Input
+
+  self.table_name = "numeric_inputs" # If this is not set manually, table name becomes "inputs"
 
   validate :range_valid?
   validates :number_set, presence: true
@@ -11,10 +13,11 @@ class NumericInput < ApplicationRecord
 
   def validate_input_value(value)
 
-    self.validate
-    unless self.errors.blank?
-      raise "Input is not valid. A value cannot be tested against it"
-    end
+    super
+
+    return true if !self.required && value.nil?
+    return false if self.required && value.nil?
+    return false unless value.is_a?(Numeric)
 
     value = value.to_f
     case self.number_set
