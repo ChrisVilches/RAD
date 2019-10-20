@@ -73,6 +73,7 @@ RSpec.describe "TextInput" do
       expect(build(:text_input, multiline: true).validate_input_value("\naa\n")).to be true
       expect(build(:text_input, multiline: false).validate_input_value("\n\naa\n")).to be true
 
+      # These have newline characters in the middle
       expect(build(:text_input, multiline: true).validate_input_value("a\na\n")).to be true
       expect(build(:text_input, multiline: false).validate_input_value("a\na\n")).to be false
       expect(build(:text_input, multiline: true).validate_input_value("\na\naa\na\na\n")).to be true

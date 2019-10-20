@@ -20,10 +20,4 @@ RSpec.describe "Element" do
     expect(element.elementable_id).to_not be nil # ID generated as well
   end
 
-  it "verifies that all element classes have shared methods" do
-
-    expect(build(:numeric_input).methods).to include (:updated_at_previous_change)
-    expect(TextInput.new.methods).to include (:updated_at_previous_change)
-
-  end
 end

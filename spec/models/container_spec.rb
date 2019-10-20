@@ -6,7 +6,7 @@ RSpec.describe "Container" do
 
     text_input = build :text_input
     numeric_input = build :numeric_input
-    
+
     c.elements << build(:element, elementable: text_input)
     c.elements << build(:element, elementable: numeric_input)
     c.save!
@@ -39,4 +39,5 @@ RSpec.describe "Container" do
     expect(c.element_list[0]).to be_a TextInput
     expect(c.element_list[1]).to be_a NumericInput
   end
+
 end
