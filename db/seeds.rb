@@ -14,6 +14,11 @@ nested_container = main_form_container.element_list[1]
 
 nested_container.elements << FactoryBot.build(:element, position: 0, elementable: FactoryBot.build(:numeric_input))
 nested_container.elements << FactoryBot.build(:element, position: 1, elementable: FactoryBot.build(:option_input, :colors))
+nested_container.elements << FactoryBot.build(:element, position: 2, elementable: FactoryBot.build(:container))
+
+nested_container2 = nested_container.element_list[2]
+
+nested_container2.elements << FactoryBot.build(:element, position: 0, elementable: FactoryBot.build(:option_input, :numbers))
 
 view = project.views[0]
 
