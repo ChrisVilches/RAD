@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_20_145633) do
+ActiveRecord::Schema.define(version: 2019_10_22_033239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,14 @@ ActiveRecord::Schema.define(version: 2019_10_20_145633) do
     t.float "min"
     t.float "max"
     t.float "excluded_values", default: [], array: true
+    t.boolean "required", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "option_inputs", force: :cascade do |t|
+    t.integer "component_type", null: false
+    t.jsonb "options", null: false
     t.boolean "required", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
