@@ -4,13 +4,11 @@ class ViewsController < ApplicationController
   # GET /views
   def index
     @views = View.where project_id: params[:project_id]
-
     render json: @views
   end
 
   # GET /views/1
   def show
-    render json: @view
   end
 
   # POST /views

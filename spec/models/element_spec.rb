@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Element" do
+RSpec.describe Element do
 
   it "factory bot definition is correct" do
     element = build(:element)
@@ -31,5 +31,15 @@ RSpec.describe "Element" do
 
     create(:element, container: container, position: 1)
   end
+
+  it "has elementable_type with class name (not Input, but a specific class name)" do
+    expect(create(:element, elementable: build(:numeric_input)).elementable_type).to eq "NumericInput"
+    expect(create(:element, elementable: build(:text_input)).elementable_type).to eq "TextInput"
+    expect(create(:element, elementable: build(:option_input)).elementable_type).to eq "OptionInput"
+    expect(create(:element, elementable: build(:container)).elementable_type).to eq "Container"
+  end
+
+  pending "has a correct elementable_type value (only allowed values)"
+
 
 end

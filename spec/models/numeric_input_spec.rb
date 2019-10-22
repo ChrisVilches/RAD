@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NumericInput" do
+RSpec.describe NumericInput do
 
   it "factory bot definition is correct" do
     expect(build(:numeric_input)).to be_valid

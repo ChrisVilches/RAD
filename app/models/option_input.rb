@@ -7,27 +7,31 @@ class OptionInput < Input
 
   enum component_type: { pulldown: 0, radio: 1, checkbox: 2 }
 
-  def validate_input_value(value)
+  def validate_input_value(list)
 
     super
-    return false unless value.is_a?(Array)
+    return false unless list.is_a?(Array)
 
-    value.uniq!
-    opt_indexes = value.select {|n| n.is_a?(Integer) && n >= 0}
-    return false if opt_indexes.length != value.length # The initial input had values other than positive integers
+    # Remove duplicate values
+    list.uniq!
+    list.sort!
 
-    if opt_indexes.empty?
+    # Check that the list contains only integers >= 0 within the options range
+    list.each do |n|
+      return false unless n.is_a?(Integer)
+      return false unless n >= 0
+      return false if n >= self.options.length
+    end
+
+    # If the list is empty, return true or false depending on the 'required' flag
+    if list.empty?
       return !self.required
     end
 
-    if [OptionInput::component_types[:pulldown], OptionInput::component_types[:radio]].include?(self.component_type)
-      return false if opt_indexes.length != 1
-    else
-      return false if opt_indexes.length > self.options.length
+    # Single-option options only allow one option.
+    if [:radio.to_s, :pulldown.to_s].include?(self.component_type)
+      return false if list.length != 1
     end
-
-    # If there's an option selected that surpasses the amount of options (wrong index)
-    return false unless opt_indexes.select {|n| n >= self.options.length }.empty?
 
     return true
   end

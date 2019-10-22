@@ -28,8 +28,10 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
   end
 
   create_table "containers", force: :cascade do |t|
+    t.bigint "view_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["view_id"], name: "index_containers_on_view_id"
   end
 
   create_table "elements", force: :cascade do |t|
@@ -101,13 +103,14 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
 
   create_table "views", force: :cascade do |t|
     t.string "name"
-    t.bigint "project_id"
+    t.bigint "project_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["project_id"], name: "index_views_on_project_id"
   end
 
   add_foreign_key "connections", "projects"
+  add_foreign_key "containers", "views"
   add_foreign_key "elements", "containers"
   add_foreign_key "queries", "views"
   add_foreign_key "query_histories", "queries"

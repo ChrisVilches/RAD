@@ -1,7 +1,7 @@
 class CreateElements < ActiveRecord::Migration[6.0]
   def change
     create_table :elements do |t|
-      t.references :elementable, references: :elements, null: false
+      t.references :elementable, null: false, references: :elements
       t.integer :position, null: false
       t.string :elementable_type, null: false
       t.references :container, foreign_key: true, null: false

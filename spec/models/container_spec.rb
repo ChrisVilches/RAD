@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Container" do
+RSpec.describe Container do
   it "can contain elements correctly" do
     c = create(:container)
 
@@ -48,7 +48,7 @@ RSpec.describe "Container" do
 
       # Fill second layer with elements
       c1.elements << build(:element, elementable: build(:numeric_input), position: 0)
-      c1.elements << build(:element, elementable: build(:numeric_input), position: 1)
+      c1.elements << build(:element, elementable: build(:option_input), position: 1)
       c1.elements << build(:element, elementable: build(:text_input), position: 2)
       c2.elements << build(:element, elementable: c3, position: 0)
       c2.elements << build(:element, elementable: build(:numeric_input), position: 1)
@@ -84,7 +84,8 @@ RSpec.describe "Container" do
       expect { main_container.save! }
       .to change { Container.count }.by(4)
       .and change { Element.count }.by(10)
-      .and change { NumericInput.count }.by(5)
+      .and change { NumericInput.count }.by(4)
+      .and change { OptionInput.count }.by(1)
       .and change { TextInput.count }.by(2)
     end
 
@@ -105,7 +106,7 @@ RSpec.describe "Container" do
       expect(main_container.element_list[3].elements.length).to eq 2
 
       expect(main_container.element_list[1].element_list[0]).to be_a NumericInput
-      expect(main_container.element_list[1].element_list[1]).to be_a NumericInput
+      expect(main_container.element_list[1].element_list[1]).to be_a OptionInput
       expect(main_container.element_list[1].element_list[2]).to be_a TextInput
 
       expect(main_container.element_list[3].element_list[0]).to be_a Container

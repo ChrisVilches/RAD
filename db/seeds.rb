@@ -1,30 +1,36 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+require 'factory_bot_rails'
 
-project = Project.create(name: "Test project")
-view = project.views.create(name: "Example view 1")
-query = view.queries.create({})
-query.query_histories.create({
+project = FactoryBot.create(:project, name: "Test project")
+
+project.views << FactoryBot.build(:view, name: "Example view 1", main_form_container: FactoryBot.build(:container))
+
+main_form_container = project.views[0].main_form_container
+
+main_form_container.elements << FactoryBot.build(:element, position: 0, elementable: FactoryBot.build(:numeric_input))
+main_form_container.elements << FactoryBot.build(:element, position: 1, elementable: FactoryBot.build(:container))
+main_form_container.elements << FactoryBot.build(:element, position: 2, elementable: FactoryBot.build(:text_input))
+
+nested_container = main_form_container.element_list[1]
+
+nested_container.elements << FactoryBot.build(:element, position: 0, elementable: FactoryBot.build(:numeric_input))
+nested_container.elements << FactoryBot.build(:element, position: 1, elementable: FactoryBot.build(:option_input, :colors))
+
+view = project.views[0]
+
+query1 = view.queries.create({})
+query1.query_histories.create({
   comment: "First",
   config_version: 1,
   content: {
-    sql: "SELECT * FROM users WHERE age > {{age}};",
-    inputs: {
-      age: {
-        type: "numerical",
-        label: "Age",
-        help: "This is the age of the character",
-        default: 15,
-        nullable: false,
-        min: 1,
-        max: 90
-      }
-    }
+    sql: "SELECT * FROM users WHERE age > {{age}};"
   }
+})
 
+query2 = view.queries.create({})
+query2.query_histories.create({
+  comment: "First",
+  config_version: 1,
+  content: {
+    sql: "SELECT * FROM posts WHERE updated_at > '2017-02-04';"
+  }
 })

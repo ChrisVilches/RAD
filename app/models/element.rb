@@ -2,11 +2,26 @@ class Element < ApplicationRecord
   belongs_to :elementable, :polymorphic => true
   belongs_to :container
   validates :elementable, presence: true
+  validate :allowed_elementable_value?
 
-  before_validation :compute_position
+  before_validation :compute_position!
+  before_validation :set_correct_elementable_type!
 
   private
-  def compute_position
+
+  # TODO This should be automatic, but I cannot get the ORM to do it automatically.
+  # The elementable_type column should be set with the specific class name, and
+  # not Input.
+  def set_correct_elementable_type!
+    self.elementable_type = self.elementable.class.to_s
+  end
+
+  def allowed_elementable_value?
+    allowed = [TextInput, NumericInput, OptionInput, Container]
+    return allowed.map{|c| c.to_s}.include?(self.elementable_type)
+  end
+
+  def compute_position!
 
     # Don't do anything if it's not nil
     return unless self.position.nil?
