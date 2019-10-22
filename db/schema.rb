@@ -34,10 +34,12 @@ ActiveRecord::Schema.define(version: 2019_10_20_145633) do
 
   create_table "elements", force: :cascade do |t|
     t.bigint "elementable_id", null: false
+    t.integer "position", null: false
     t.string "elementable_type", null: false
-    t.bigint "container_id"
+    t.bigint "container_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["container_id", "position"], name: "index_elements_on_container_id_and_position", unique: true
     t.index ["container_id"], name: "index_elements_on_container_id"
     t.index ["elementable_id"], name: "index_elements_on_elementable_id"
   end

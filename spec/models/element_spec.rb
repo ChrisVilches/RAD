@@ -20,4 +20,16 @@ RSpec.describe "Element" do
     expect(element.elementable_id).to_not be nil # ID generated as well
   end
 
+  it "database composite key is unique" do
+    container = create(:container)
+
+    create(:element, container: container, position: 0)
+
+    expect {
+      create(:element, container: container, position: 0)
+    }.to raise_error ActiveRecord::RecordNotUnique
+
+    create(:element, container: container, position: 1)
+  end
+
 end
