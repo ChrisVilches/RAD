@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
 
   create_table "containers", force: :cascade do |t|
     t.bigint "view_id"
+    t.text "is_active"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["view_id"], name: "index_containers_on_view_id"
@@ -37,7 +38,10 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
   create_table "elements", force: :cascade do |t|
     t.bigint "elementable_id", null: false
     t.integer "position", null: false
+    t.string "label", limit: 50, null: false
+    t.string "variable_name", limit: 20, null: false
     t.string "elementable_type", null: false
+    t.string "description"
     t.bigint "container_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -50,6 +54,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
     t.integer "number_set", null: false
     t.float "min"
     t.float "max"
+    t.string "placeholder"
     t.float "excluded_values", default: [], array: true
     t.boolean "required", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -95,6 +100,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
     t.boolean "multiline", null: false
     t.string "regex"
     t.integer "min"
+    t.string "placeholder"
     t.integer "max"
     t.boolean "required", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -104,6 +110,7 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
   create_table "views", force: :cascade do |t|
     t.string "name"
     t.bigint "project_id", null: false
+    t.text "readme"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["project_id"], name: "index_views_on_project_id"

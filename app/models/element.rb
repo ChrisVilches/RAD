@@ -3,6 +3,7 @@ class Element < ApplicationRecord
   belongs_to :container
   validates :elementable, presence: true
   validate :allowed_elementable_value?
+  validate :correct_variable_name?
 
   before_validation :compute_position!
   before_validation :set_correct_elementable_type!
@@ -30,5 +31,12 @@ class Element < ApplicationRecord
     return if self.container_id.nil?
 
     self.position = Element.where(container: self.container).count
+  end
+
+  def correct_variable_name?
+
+    if self.variable_name.nil? || (self.variable_name.match /\A[a-zA-Z0-9_-]{1,20}\z/).nil?
+      errors.add :variable_name
+    end
   end
 end

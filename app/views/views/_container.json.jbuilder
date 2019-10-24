@@ -1,10 +1,17 @@
 json.elements(container.elements) do |element|
 
+  json.variable_name element.variable_name
+  json.id element.id
+  json.elementable_type element.elementable_type.to_s
+
   if element.elementable_type == Container.to_s
-    json.elementable_type Container.to_s
-    json.partial!("container", container: element.elementable)
+
+    container = element.elementable
+    json.partial!("container", container: container)
+    json.is_active container.is_active
   else
-    json.elementable_type element.elementable_type.to_s
+    json.label element.label
+    json.description element.description
     json.params element.elementable.as_json except: [:id, :updated_at, :created_at]
   end
 

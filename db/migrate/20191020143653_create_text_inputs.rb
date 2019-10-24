@@ -4,6 +4,7 @@ class CreateTextInputs < ActiveRecord::Migration[6.0]
       t.boolean :multiline, null: false
       t.string :regex, null: true
       t.integer :min, null: true
+      t.string :placeholder, null: true
       t.integer :max, null: true
       t.boolean :required, null: false
       t.timestamps

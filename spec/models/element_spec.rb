@@ -20,6 +20,9 @@ RSpec.describe Element do
     expect(element.elementable_id).to_not be nil # ID generated as well
   end
 
+  pending "ensures elements that have a Container elementable have optional label, but those that are not Containers must have a label"
+  pending "ensures that (non-container) elements can have description but not containers"
+
   it "database composite key is unique" do
     container = create(:container)
 
@@ -40,6 +43,7 @@ RSpec.describe Element do
   end
 
   pending "has a correct elementable_type value (only allowed values)"
+  pending "has a correct, non-null and non-empty variable_name"
 
 
 end

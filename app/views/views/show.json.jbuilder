@@ -2,6 +2,7 @@ json.view do
   json.id @view.id
   json.project_id @view.project_id
   json.name @view.name
+  json.readme @view.readme
   json.created_at @view.created_at
   json.updated_at @view.updated_at
 

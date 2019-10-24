@@ -20,4 +20,9 @@ RSpec.describe "View" do
     expect(main_form_container).to respond_to :element_list
   end
 
+  pending "empty containers are excluded from the view.
+  In other words, containers that are leaf in the DOM tree are excluded,
+  but I have to determine what happens when the view main container is empty
+  (it's a different case)"
+
 end
