@@ -201,6 +201,35 @@ RSpec.describe Container do
     }.to raise_error ActiveRecord::RecordNotUnique
   end
 
+  describe "polymorphism" do
+
+    it "a container initially doesn't belong to a view or query" do
+      c = create(:container)
+      expect(c.inputable_type).to be_nil
+    end
+
+    it "container can contain containers" do
+      c0 = build(:container)
+      c1 = build(:container)
+      c0.elements << build(:element, elementable: c1, position: 0)
+      expect(c0.element_list.first).to be_a Container
+    end
+
+    it "views can have containers" do
+      v = create(:view, :with_form_container)
+      c = v.container
+      expect(c).to be_a Container
+      expect(c.inputable_type).to eq "View"
+    end
+    
+    it "queries can have containers" do
+      q = create(:query, :with_form_container)
+      c = q.container
+      expect(c).to be_a Container
+      expect(c.inputable_type).to eq "Query"
+    end
+  end
+
   pending "A container cannot have inputs with the same variable name twice in it, or nested containers but two different (not related/nested containers, but from the same view, can have the same variable name)"
 
 end

@@ -28,11 +28,11 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
   end
 
   create_table "containers", force: :cascade do |t|
-    t.bigint "view_id"
+    t.integer "inputable_id"
     t.text "is_active"
+    t.string "inputable_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["view_id"], name: "index_containers_on_view_id"
   end
 
   create_table "elements", force: :cascade do |t|
@@ -117,7 +117,6 @@ ActiveRecord::Schema.define(version: 2019_10_22_033239) do
   end
 
   add_foreign_key "connections", "projects"
-  add_foreign_key "containers", "views"
   add_foreign_key "elements", "containers"
   add_foreign_key "queries", "views"
   add_foreign_key "query_histories", "queries"

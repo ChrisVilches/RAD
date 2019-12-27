@@ -5,7 +5,7 @@ class Container < ApplicationRecord
   has_many :text_inputs, through: :elements, source: :elementable, source_type: 'TextInput'
   has_many :containers, through: :elements, source: :elementable, source_type: 'Container'
 
-  belongs_to :view, optional: true
+  belongs_to :inputable, polymorphic: true, optional: true
 
   validate :element_order_correct?
   validate :validate_recursively!

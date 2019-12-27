@@ -45,6 +45,6 @@ class ViewsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def view_params
-      params.require(:view).permit(:name)
+      params.require(:view).permit(:name, :readme)
     end
 end

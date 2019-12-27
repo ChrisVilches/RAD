@@ -6,8 +6,15 @@ json.view do
   json.created_at @view.created_at
   json.updated_at @view.updated_at
 
-  json.main_form_container do
-    json.partial!("container", container: @view.main_form_container)
+  json.container do
+    json.partial!("container", container: @view.container)
+  end
+
+  json.queries(@view.queries) do |query|
+    json.id query.id
+    json.container do
+      json.partial!("container", container: query.container)
+    end
   end
 
 end

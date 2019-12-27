@@ -1,4 +1,4 @@
-json.elements(container.elements) do |element|
+json.elements(container.nil? ? [] : container.elements) do |element|
 
   json.variable_name element.variable_name
   json.id element.id

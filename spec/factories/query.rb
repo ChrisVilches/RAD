@@ -1,6 +1,6 @@
 FactoryBot.define do
-  factory :view do
-    association :project, factory: :project
+  factory :query do
+    association :view, factory: :view
 
     trait :with_form_container do
       association :container, factory: :container

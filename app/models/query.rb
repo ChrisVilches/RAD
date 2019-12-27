@@ -1,6 +1,7 @@
 class Query < ApplicationRecord
   has_many :query_histories
   belongs_to :view
+  has_one :container, as: :inputable
 
   validate :config_is_correct?
 
