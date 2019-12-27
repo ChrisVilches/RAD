@@ -201,4 +201,6 @@ RSpec.describe Container do
     }.to raise_error ActiveRecord::RecordNotUnique
   end
 
+  pending "A container cannot have inputs with the same variable name twice in it, or nested containers but two different (not related/nested containers, but from the same view, can have the same variable name)"
+
 end
