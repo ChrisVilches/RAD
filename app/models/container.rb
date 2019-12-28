@@ -9,6 +9,7 @@ class Container < ApplicationRecord
 
   validate :element_order_correct?
   validate :validate_recursively!
+  validate :all_variable_names_are_unique?
 
   # In case the design ever changes, this is a method that returns the list of
   # elements inside the container. If the database structure changes, then this method
@@ -36,6 +37,20 @@ class Container < ApplicationRecord
     end
   end
 
+  # Checks that all variable names are unique.
+  def all_variable_names_are_unique?
+    names = Set.new
+    self.elements.each do |e|
+      n = e.variable_name
+      if names.include?(n)
+        errors.add(:elements)
+        return
+      else
+        names << n
+      end
+    end
+  end
+
   # Validates that the elements don't have incorrect positions, such as
   # repeated positions, or skips from one position to another.
   def element_order_correct?
@@ -45,7 +60,6 @@ class Container < ApplicationRecord
         errors.add(:elements)
         return
       end
-
     end
   end
 end

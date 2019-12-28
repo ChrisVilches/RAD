@@ -30,6 +30,23 @@ RSpec.describe Container do
     .and change { TextInput.count }.by(2)
   end
 
+  it "A container cannot have inputs with the same variable name twice in it" do
+    c0 = build(:container)
+    c0.elements << build(:element, variable_name: "aaa", elementable: build(:numeric_input), position: 0)
+    c0.elements << build(:element, variable_name: "bbb", elementable: build(:text_input), position: 1)
+    c0.elements << build(:element, variable_name: "aaa", elementable: build(:text_input), position: 2)
+    expect(c0).to_not be_valid
+
+    c1 = build(:container)
+    c1.elements << build(:element, variable_name: "aaa", elementable: build(:numeric_input), position: 0)
+    c1.elements << build(:element, variable_name: "bbb", elementable: build(:text_input), position: 1)
+    c1.elements << build(:element, variable_name: "aaa_", elementable: build(:text_input), position: 2)
+    expect(c1).to be_valid
+
+    c1.elements << build(:element, variable_name: "bbb", elementable: build(:text_input), position: 2)
+    expect(c1).to_not be_valid
+  end
+
   describe "nested containers" do
 
     let(:main_container) {
@@ -221,7 +238,7 @@ RSpec.describe Container do
       expect(c).to be_a Container
       expect(c.inputable_type).to eq "View"
     end
-    
+
     it "queries can have containers" do
       q = create(:query, :with_form_container)
       c = q.container
@@ -229,7 +246,5 @@ RSpec.describe Container do
       expect(c.inputable_type).to eq "Query"
     end
   end
-
-  pending "A container cannot have inputs with the same variable name twice in it, or nested containers but two different (not related/nested containers, but from the same view, can have the same variable name)"
 
 end

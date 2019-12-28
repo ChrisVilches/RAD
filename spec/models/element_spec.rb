@@ -43,7 +43,19 @@ RSpec.describe Element do
   end
 
   pending "has a correct elementable_type value (only allowed values)"
-  pending "has a correct, non-null and non-empty variable_name"
+
+  it "has a correct, non-null and non-empty variable_name" do
+    expect(build(:element, variable_name: nil)).to_not be_valid
+    expect(build(:element, variable_name: "")).to_not be_valid
+    expect(build(:element, variable_name: "a")).to be_valid
+    expect(build(:element, variable_name: "aA")).to be_valid
+    expect(build(:element, variable_name: "(a)")).to_not be_valid
+    expect(build(:element, variable_name: "1234567890123456789")).to be_valid
+    expect(build(:element, variable_name: "12345678901234567890")).to be_valid
+    expect(build(:element, variable_name: "123456789012345678901")).to_not be_valid
+    expect(build(:element, variable_name: "aaa$")).to_not be_valid
+    expect(build(:element, variable_name: "aaa.bbb")).to_not be_valid
+  end
 
 
 end

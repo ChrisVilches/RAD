@@ -14,6 +14,8 @@ ActiveRecord::Base.transaction do
   1. This is just a demo.
   2. It's still bugged and being developed.
   3. The inputs don't mean anything, it's just for testing.
+  4. Type \"I love you\" in \"Message\" to make a container appear (query 1).
+  5. Choose white as favorite color and type 777 in \"Type some number\" to make a container appear (query 2).
 
   Remember that *this text is also just for testing markdown*.
 
@@ -49,6 +51,11 @@ ActiveRecord::Base.transaction do
   view2.container.elements << FactoryBot.build(:element, position: 0, label: "Member ID", elementable: FactoryBot.build(:numeric_input, :decimal, :required, placeholder: 1234), description: "ID of member to perform all queries on.")
 
   query1 = view.queries.create({})
+  query1.container = FactoryBot.build(:container)
+  query1.container.elements << FactoryBot.build(:element, position: 0, elementable: FactoryBot.build(:container, is_active: "(data, global) => global['dummy_element-3'] == \"I love you\""))
+  nested_container_query1 = query1.container.element_list[0]
+  nested_container_query1.elements << FactoryBot.build(:element, position: 0, label: "The value", elementable: FactoryBot.build(:numeric_input, :integer))
+  query1.save!
   query1.query_histories.create({
     comment: "First",
     config_version: 1,
@@ -58,6 +65,13 @@ ActiveRecord::Base.transaction do
   })
 
   query2 = view.queries.create({})
+  query2.container = FactoryBot.build(:container)
+  query2.container.elements << FactoryBot.build(:element, position: 0, label: "Type some number", elementable: FactoryBot.build(:numeric_input, :integer))
+  query2.container.elements << FactoryBot.build(:element, position: 1, elementable: FactoryBot.build(:container, is_active: "(data, global) => global['dummy_element-2']['dummy_element-5'] == 2 && data['dummy_element-11'] == 777"))
+  nested_container_query2 = query2.container.element_list[1]
+  nested_container_query2.elements << FactoryBot.build(:element, position: 0, label: "The value", elementable: FactoryBot.build(:numeric_input, :integer))
+
+  query2.save!
   query2.query_histories.create({
     comment: "First",
     config_version: 1,
