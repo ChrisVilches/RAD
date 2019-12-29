@@ -23,7 +23,37 @@ class Container < ApplicationRecord
     return list
   end
 
+  def user_inputs_errors(user_inputs)
+
+    errors = Set.new
+
+    user_inputs.each do |i|
+      element = find_element_from_path(i[:path])
+      valid_result = element.elementable.validate_input_value(i[:value])
+
+      errors << i[:path] unless valid_result
+    end
+
+    return errors.to_a
+  end
+
   private
+
+  def find_element_from_path(path)
+    curr = self
+    if path.length > 1
+      # Traversing containers.
+      path[0..path.length-2].each do |p|
+        curr = curr.elements.find {|e| e.variable_name == p}
+        raise "Path is wrong" if curr.nil?
+        curr = curr.elementable
+        raise "Path element is not a container" unless curr.is_a?(Container)
+      end
+    end
+
+    element = curr.elements.find {|e| e.variable_name == path.last}
+    return element
+  end
 
   # This method validates recursively for all nested containers.
   # It also checks that all elements (including inputs, etc) have a correct

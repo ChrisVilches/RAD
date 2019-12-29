@@ -1,5 +1,5 @@
 class QueriesController < ApplicationController
-  before_action :set_query, only: [:show, :update, :destroy]
+  before_action :set_query, only: [:show, :update, :destroy, :execute]
 
   # GET /queries
   def index
@@ -23,6 +23,31 @@ class QueriesController < ApplicationController
       render json: @query, status: :created# TODO, location: @query
     else
       render json: @query.errors, status: :unprocessable_entity
+    end
+  end
+
+  # POST /query/1/execute
+  def execute
+    conn = Connection.new
+
+    global_user_input = params[:global]
+    query_user_input = params[:query]
+
+    begin
+
+      result = conn.execute_query(@query, query_user_input, global_user_input)
+      render json: result
+
+    rescue Query::IncorrectParams => e
+      render json: {
+        global_form_errors: e.global_form_errors,
+        query_form_errors: e.query_form_errors
+      }, status: :unprocessable_entity
+
+    rescue Query::HasParamsNotReplaced => e
+      render json: {
+        param_names: e.param_names
+      }, status: :internal_server_error
     end
   end
 

@@ -8,6 +8,8 @@ class Element < ApplicationRecord
   before_validation :compute_position!
   before_validation :set_correct_elementable_type!
 
+  VARIABLE_NAME_REGEX = /\A[a-zA-Z0-9_-]{1,20}\z/
+
   private
 
   # TODO This should be automatic, but I cannot get the ORM to do it automatically.
@@ -35,7 +37,7 @@ class Element < ApplicationRecord
 
   def correct_variable_name?
 
-    if self.variable_name.nil? || (self.variable_name.match /\A[a-zA-Z0-9_-]{1,20}\z/).nil?
+    if self.variable_name.nil? || (self.variable_name.match VARIABLE_NAME_REGEX).nil?
       errors.add :variable_name
     end
   end

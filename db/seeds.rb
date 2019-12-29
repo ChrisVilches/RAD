@@ -66,7 +66,7 @@ ActiveRecord::Base.transaction do
 
   query2 = view.queries.create({})
   query2.container = FactoryBot.build(:container)
-  query2.container.elements << FactoryBot.build(:element, position: 0, label: "Type some number", elementable: FactoryBot.build(:numeric_input, :integer))
+  query2.container.elements << FactoryBot.build(:element, position: 0, label: "Type some number", elementable: FactoryBot.build(:numeric_input, :integer, :required))
   query2.container.elements << FactoryBot.build(:element, position: 1, elementable: FactoryBot.build(:container, is_active: "(data, global) => global['dummy_element-2']['dummy_element-5'] == 2 && data['dummy_element-11'] == 777"))
   nested_container_query2 = query2.container.element_list[1]
   nested_container_query2.elements << FactoryBot.build(:element, position: 0, label: "The value", elementable: FactoryBot.build(:numeric_input, :integer))
@@ -76,7 +76,7 @@ ActiveRecord::Base.transaction do
     comment: "First",
     config_version: 1,
     content: {
-      sql: "SELECT * FROM posts WHERE updated_at > '2017-02-04';"
+      sql: "insert into users (name, age) values ('aa', 7); update users set age = age+1 where id > {{dummy_element-11}}; SELECT * FROM users WHERE id > {{dummy_element-11}};"
     }
   })
 

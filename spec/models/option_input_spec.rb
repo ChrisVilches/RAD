@@ -60,7 +60,7 @@ RSpec.describe OptionInput do
     }
 
     it "validates wrong input type" do
-      expect(numbers.validate_input_value(3)).to be false
+      expect(numbers.validate_input_value(3)).to be true
       expect(numbers.validate_input_value("aa")).to be false
       expect(numbers.validate_input_value(true)).to be false
       expect(numbers.validate_input_value([1.1])).to be false

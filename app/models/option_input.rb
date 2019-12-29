@@ -10,7 +10,11 @@ class OptionInput < Input
   def validate_input_value(list)
 
     super
-    return false unless list.is_a?(Array)
+
+    unless list.is_a?(Array)
+      return false unless list.is_a?(Integer)
+      list = [list]
+    end
 
     # Remove duplicate values
     list.uniq!

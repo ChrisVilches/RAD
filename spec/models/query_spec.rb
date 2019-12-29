@@ -21,4 +21,6 @@ RSpec.describe "Query" do
     expect(container).to respond_to :element_list
   end
 
+  pending "doesn't create a new revision if the code saved is the same as the latest revision"
+
 end

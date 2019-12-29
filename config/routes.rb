@@ -15,5 +15,7 @@ Rails.application.routes.draw do
   put '/project/:project_id/view/:view_id/queries/:query_id', to: 'queries#update'
   get '/project/:project_id/view/:view_id/queries/:query_id/log', to: 'query_histories#index'
 
+  post '/query/:query_id/execute', to: 'queries#execute'
+
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
