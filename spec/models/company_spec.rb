@@ -47,6 +47,23 @@ RSpec.describe Company do
 
   end
 
+  it "can have users that joined" do
+    c = create(:company)
+    u1 = create(:user)
+    u2 = create(:user)
+    u3 = create(:user)
+
+    c.users << u1
+    c.users << u2
+    c.users << u3
+
+    expect(c.users.length).to eq 3
+    expect(c.users.first).to be_a User
+
+    expect(c.participations.length).to eq 3
+    expect(c.participations.first).to be_a Participation
+  end
+
   pending "validates url format and accepted characters"
 
 end

@@ -2,15 +2,17 @@ require 'factory_bot_rails'
 
 ActiveRecord::Base.transaction do
 
-  FactoryBot.create(:user)
-  FactoryBot.create(:user)
-  FactoryBot.create(:user)
-  FactoryBot.create(:user)
-  FactoryBot.create(:user)
-  FactoryBot.create(:user)
-  FactoryBot.create(:user)
+  u1 = FactoryBot.create(:user)
+  u2 = FactoryBot.create(:user)
+  u3 = FactoryBot.create(:user)
+  u4 = FactoryBot.create(:user)
+  u5 = FactoryBot.create(:user)
+  u6 = FactoryBot.create(:user)
+  u7 = FactoryBot.create(:user)
 
   company = FactoryBot.create(:company, url: "felo", name: "Felo K.K. フェロ株式会社")
+
+  company.users << u1
 
   project = FactoryBot.create(:project, name: "Test project", company: company)
 

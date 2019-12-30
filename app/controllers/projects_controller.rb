@@ -3,7 +3,8 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
-    @projects = Project.where(published: true, company_id: current_company_id)
+
+    @projects = current_user.projects
 
     render json: @projects
   end
@@ -16,8 +17,12 @@ class ProjectsController < ApplicationController
   # POST /projects
   def create
     @project = Project.new(project_params)
+    @project.company = current_company
+    authorize @project
 
     if @project.save
+      # Add user that created the project as participant.
+      @project.users << current_user
       render json: @project, status: :created# TODO , location: @project
     else
       render json: @project.errors, status: :unprocessable_entity
@@ -41,11 +46,11 @@ class ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.find_by(id: params[:project_id], company_id: current_company_id)
+      @project = Project.find_by(id: params[:project_id], company_id: current_company.id)
     end
 
     # Only allow a trusted parameter "white list" through.
     def project_params
-      params.require(:project).permit(:name)
+      params.require(:project).permit([:name, :readme])
     end
 end

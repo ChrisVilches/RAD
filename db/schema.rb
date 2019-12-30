@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_30_134337) do
+ActiveRecord::Schema.define(version: 2019_12_30_155947) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,28 @@ ActiveRecord::Schema.define(version: 2019_12_30_134337) do
     t.boolean "required", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "participations", force: :cascade do |t|
+    t.boolean "super_permission", default: false, null: false
+    t.boolean "project_permission", default: false, null: false
+    t.boolean "connection_permission", default: false, null: false
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.index ["company_id"], name: "index_participations_on_company_id"
+    t.index ["user_id", "company_id"], name: "index_participations_on_user_id_and_company_id", unique: true
+    t.index ["user_id"], name: "index_participations_on_user_id"
+  end
+
+  create_table "project_participations", force: :cascade do |t|
+    t.boolean "execution_permission", default: false, null: false
+    t.boolean "develop_permission", default: false, null: false
+    t.boolean "publish_permission", default: false, null: false
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.index ["project_id"], name: "index_project_participations_on_project_id"
+    t.index ["user_id", "project_id"], name: "index_project_participations_on_user_id_and_project_id", unique: true
+    t.index ["user_id"], name: "index_project_participations_on_user_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -143,6 +165,10 @@ ActiveRecord::Schema.define(version: 2019_12_30_134337) do
 
   add_foreign_key "connections", "projects"
   add_foreign_key "elements", "containers"
+  add_foreign_key "participations", "companies"
+  add_foreign_key "participations", "users"
+  add_foreign_key "project_participations", "projects"
+  add_foreign_key "project_participations", "users"
   add_foreign_key "projects", "companies"
   add_foreign_key "queries", "views"
   add_foreign_key "query_histories", "queries"
