@@ -1,4 +1,4 @@
-class QueriesController < ApplicationController
+class QueriesController < AuthenticatedController
   before_action :set_query, only: [:show, :update, :destroy, :execute]
 
   # GET /queries
@@ -28,6 +28,9 @@ class QueriesController < ApplicationController
 
   # POST /query/1/execute
   def execute
+
+    authorize @query
+
     conn = Connection.new
 
     global_user_input = params[:global]

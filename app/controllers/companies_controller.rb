@@ -1,4 +1,4 @@
-class CompaniesController < ApplicationController
+class CompaniesController < AuthenticatedController
   before_action :set_company, only: [:show]
   # TODO test this controller
   # GET /companies

@@ -1,4 +1,4 @@
-class QueryHistoriesController < ApplicationController
+class QueryHistoriesController < AuthenticatedController
   before_action :set_query_history, only: [:show, :update, :destroy]
 
   # GET /query_histories

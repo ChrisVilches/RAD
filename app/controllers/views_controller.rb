@@ -1,4 +1,4 @@
-class ViewsController < ApplicationController
+class ViewsController < AuthenticatedController
   before_action :set_view, only: [:show, :update, :destroy]
 
   # GET /views

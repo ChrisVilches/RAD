@@ -15,6 +15,7 @@ ActiveRecord::Base.transaction do
   company.users << u1
 
   project = FactoryBot.create(:project, name: "Test project", company: company)
+  project.users << u1
 
   readme_text = "# Instructions
 
