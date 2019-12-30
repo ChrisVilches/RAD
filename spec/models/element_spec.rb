@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Element do
+RSpec.describe Element, type: :model do
 
   it "factory bot definition is correct" do
     element = build(:element)

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Container do
+RSpec.describe Container, type: :model do
   it "can contain elements correctly" do
     c = create(:container)
 

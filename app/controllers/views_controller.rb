@@ -1,5 +1,5 @@
 class ViewsController < AuthenticatedController
-  before_action :set_view, only: [:show, :update, :destroy]
+  before_action :set_view, only: [:show_without_details, :show_with_details, :update, :destroy]
 
   # GET /views
   def index
@@ -8,7 +8,16 @@ class ViewsController < AuthenticatedController
   end
 
   # GET /views/1
-  def show
+  # For users without developer permissions.
+  # They cannot see details such as SQL code, etc.
+  def show_without_details
+    authorize @view
+  end
+
+  # GET /views/1/details
+  # For users with developer permissions.
+  def show_with_details
+    authorize @view
   end
 
   # POST /views

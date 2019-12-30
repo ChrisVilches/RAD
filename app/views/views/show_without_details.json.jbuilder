@@ -12,6 +12,7 @@ json.view do
 
   json.queries(@view.queries.where(published: true)) do |query|
     json.id query.id
+    json.name query.name
     json.description query.description
     json.container do
       json.partial!("container", container: query.container)

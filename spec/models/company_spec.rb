@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Company do
+RSpec.describe Company, type: :model do
 
   it "factory bot definition is correct" do
     expect(build(:company)).to be_valid

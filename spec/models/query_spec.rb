@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Query" do
+RSpec.describe Query, type: :model do
 
   it "factory bot definition is correct" do
     expect(build(:query)).to be_valid

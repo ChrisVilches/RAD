@@ -10,4 +10,9 @@ class ProjectPolicy < ApplicationPolicy
     return participation.project_permission
 
   end
+
+  def show?
+    joined_project = @user.project_participations.find_by(project_id: @record.id)
+    !joined_project.nil?
+  end
 end

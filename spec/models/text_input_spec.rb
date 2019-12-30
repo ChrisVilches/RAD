@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe TextInput do
+RSpec.describe TextInput, type: :model do
 
   it "factory bot definition is correct" do
     expect(build(:text_input)).to be_valid

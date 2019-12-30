@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "View" do
+RSpec.describe View, type: :model do
 
   it "factory bot definition is correct" do
     expect(build(:view)).to be_valid

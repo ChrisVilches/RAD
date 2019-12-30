@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_155947) do
     t.decimal "average_time", default: "0.0"
     t.date "last_execution"
     t.bigint "view_id", null: false
+    t.string "name", null: false
     t.string "description"
     t.boolean "published", default: true, null: false
     t.datetime "created_at", precision: 6, null: false

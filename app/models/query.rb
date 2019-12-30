@@ -6,6 +6,7 @@ class Query < ApplicationRecord
   validate :config_is_correct?
 
   has_one :latest_revision, ->(query) { where(query_id: query.id).order("created_at DESC") }, class_name: QueryHistory.to_s
+  validates :name, presence: true, allow_blank: false
 
   class IncorrectParams < StandardError
     attr_reader :global_form_errors, :query_form_errors
@@ -101,7 +102,9 @@ class Query < ApplicationRecord
     # Improve it.
     query_params.each do |p|
       param_name = p[:path].join(".")
-      sql = sql.gsub("{{#{param_name}}}", p[:value].to_s)
+      del_left = "{{"
+      del_right = "}}"
+      sql = sql.gsub(Regexp.new("#{del_left}\\s*#{param_name}\\s*#{del_right}"), p[:value].to_s)
     end
 
     # TODO Here's a place that can be greatly improved in the future.

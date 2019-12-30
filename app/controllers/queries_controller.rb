@@ -18,6 +18,7 @@ class QueriesController < AuthenticatedController
 
     view = View.where(id: params[:view_id], project_id: params[:project_id]).first
     @query = view.queries.create query_params
+    authorize @query
 
     if @query
       render json: @query, status: :created# TODO, location: @query
@@ -83,7 +84,7 @@ class QueriesController < AuthenticatedController
 
     # Only allow a trusted parameter "white list" through.
     def query_params
-      params.require(:query).permit(:code)
+      params.require(:query).permit(:name, :description)
     end
 
     def query_history_params

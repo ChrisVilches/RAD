@@ -3,14 +3,13 @@ class ProjectsController < AuthenticatedController
 
   # GET /projects
   def index
-
-    @projects = current_user.projects
-
+    @projects = current_user.projects.where(company: current_company)
     render json: @projects
   end
 
   # GET /projects/1
   def show
+    authorize @project
     render json: @project
   end
 

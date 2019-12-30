@@ -16,6 +16,9 @@ ActiveRecord::Base.transaction do
 
   project = FactoryBot.create(:project, name: "Test project", company: company)
   project.users << u1
+  pp = project.project_participations.first
+  pp.develop_permission = true
+  pp.save
 
   readme_text = "# Instructions
 
@@ -61,7 +64,7 @@ ActiveRecord::Base.transaction do
 
   view2.container.elements << FactoryBot.build(:element, position: 0, label: "Member ID", elementable: FactoryBot.build(:numeric_input, :decimal, :required, placeholder: 1234), description: "ID of member to perform all queries on.")
 
-  query1 = view.queries.create({})
+  query1 = view.queries.create({ name: "Ring ding dong" })
   query1.description = "Description for query 1."
   query1.container = FactoryBot.build(:container)
   query1.container.elements << FactoryBot.build(:element, position: 0, elementable: FactoryBot.build(:container, is_active: "(data, global) => global['dummy_element-3'] == \"I love you\""))
@@ -76,7 +79,7 @@ ActiveRecord::Base.transaction do
     }
   })
 
-  query2 = view.queries.create({})
+  query2 = view.queries.create({ name: "Boom shakalaka" })
   query2.description = "Description for query 2."
   query2.container = FactoryBot.build(:container)
   query2.container.elements << FactoryBot.build(:element, position: 0, label: "Type some number", elementable: FactoryBot.build(:numeric_input, :integer, :required))
@@ -93,11 +96,11 @@ ActiveRecord::Base.transaction do
     }
   })
 
-  view.queries.create({ description: "Description for hidden query 3.", published: false })
+  view.queries.create({ name: "Hiddenだよ", description: "Description for hidden query 3.", published: false })
 
-  query3 = view2.queries.create({})
+  query3 = view2.queries.create({ name: "Hello" })
 
-  query4 = view2.queries.create({})
+  query4 = view2.queries.create({ name: "Bonabana" })
   query4.container = FactoryBot.build(:container)
   query4.container.elements << FactoryBot.build(:element, position: 0, label: "Max member age", elementable: FactoryBot.build(:numeric_input, :integer))
   query4.save!
