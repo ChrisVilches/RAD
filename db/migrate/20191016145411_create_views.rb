@@ -4,6 +4,7 @@ class CreateViews < ActiveRecord::Migration[6.0]
       t.string :name
       t.references :project, foreign_key: true, null: false
       t.text :readme, null: true
+      t.boolean :published, null: false, default: true
       t.timestamps
     end
   end

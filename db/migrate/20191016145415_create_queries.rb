@@ -4,8 +4,9 @@ class CreateQueries < ActiveRecord::Migration[6.0]
       t.integer :execution_count, default: 0, null: false
       t.numeric :average_time, default: 0
       t.date :last_execution, default: nil
-      t.boolean :active, default: true, null: false
       t.references :view, foreign_key: true, null: false
+      t.string :description, null: true
+      t.boolean :published, null: false, default: true
       t.timestamps
     end
   end

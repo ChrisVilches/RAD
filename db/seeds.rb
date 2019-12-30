@@ -1,11 +1,18 @@
 require 'factory_bot_rails'
 
-
-
-
 ActiveRecord::Base.transaction do
 
-  project = FactoryBot.create(:project, name: "Test project")
+  FactoryBot.create(:user)
+  FactoryBot.create(:user)
+  FactoryBot.create(:user)
+  FactoryBot.create(:user)
+  FactoryBot.create(:user)
+  FactoryBot.create(:user)
+  FactoryBot.create(:user)
+
+  company = FactoryBot.create(:company, url: "felo", name: "Felo K.K. フェロ株式会社")
+
+  project = FactoryBot.create(:project, name: "Test project", company: company)
 
   readme_text = "# Instructions
 
@@ -28,6 +35,7 @@ ActiveRecord::Base.transaction do
 
   project.views << FactoryBot.build(:view, readme: readme_text, name: "Example view 1", container: FactoryBot.build(:container))
   project.views << FactoryBot.build(:view, readme: readme2, name: "Member data", container: FactoryBot.build(:container))
+  project.views << FactoryBot.build(:view, published: false, readme: "This is a hidden view.", name: "Another view", container: FactoryBot.build(:container))
 
   container = project.views[0].container
 
@@ -51,6 +59,7 @@ ActiveRecord::Base.transaction do
   view2.container.elements << FactoryBot.build(:element, position: 0, label: "Member ID", elementable: FactoryBot.build(:numeric_input, :decimal, :required, placeholder: 1234), description: "ID of member to perform all queries on.")
 
   query1 = view.queries.create({})
+  query1.description = "Description for query 1."
   query1.container = FactoryBot.build(:container)
   query1.container.elements << FactoryBot.build(:element, position: 0, elementable: FactoryBot.build(:container, is_active: "(data, global) => global['dummy_element-3'] == \"I love you\""))
   nested_container_query1 = query1.container.element_list[0]
@@ -65,6 +74,7 @@ ActiveRecord::Base.transaction do
   })
 
   query2 = view.queries.create({})
+  query2.description = "Description for query 2."
   query2.container = FactoryBot.build(:container)
   query2.container.elements << FactoryBot.build(:element, position: 0, label: "Type some number", elementable: FactoryBot.build(:numeric_input, :integer, :required))
   query2.container.elements << FactoryBot.build(:element, position: 1, elementable: FactoryBot.build(:container, is_active: "(data, global) => global['dummy_element-2']['dummy_element-5'] == 2 && data['dummy_element-11'] == 777"))
@@ -79,6 +89,8 @@ ActiveRecord::Base.transaction do
       sql: "insert into users (name, age) values ('aa', 7); update users set age = age+1 where id > {{dummy_element-11}}; SELECT * FROM users WHERE id > {{dummy_element-11}};"
     }
   })
+
+  view.queries.create({ description: "Description for hidden query 3.", published: false })
 
   query3 = view2.queries.create({})
 

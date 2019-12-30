@@ -1,4 +1,4 @@
-class CreateOptionInput < ActiveRecord::Migration[6.0]
+class CreateOptionInputs < ActiveRecord::Migration[6.0]
   def change
     create_table :option_inputs do |t|
       t.integer :component_type, null: false

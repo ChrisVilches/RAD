@@ -3,7 +3,7 @@ class ViewsController < ApplicationController
 
   # GET /views
   def index
-    @views = View.where project_id: params[:project_id]
+    @views = View.where(project_id: params[:project_id], published: true)
     render json: @views
   end
 
