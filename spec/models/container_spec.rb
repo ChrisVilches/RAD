@@ -247,4 +247,68 @@ RSpec.describe Container, type: :model do
     end
   end
 
+  describe "container creation & destruction" do
+    pending "splt this test into 2 or more... it tests different things at once ↓"
+
+    let(:container_tree) {
+      c0 = build(:container)
+
+      c0.elements << build(:element, position: 0, elementable: build(:numeric_input))
+      c0.elements << build(:element, position: 2, elementable: build(:numeric_input))
+      c0.elements << build(:element, position: 3, elementable: build(:text_input))
+
+      c1 = build(:container)
+
+      c1.elements << build(:element, position: 0, elementable: build(:option_input))
+      c1.elements << build(:element, position: 1, elementable: build(:numeric_input))
+      c1.elements << build(:element, position: 3, elementable: build(:text_input))
+
+      c2 = build(:container)
+
+      c2.elements << build(:element, position: 0, elementable: build(:option_input))
+      c2.elements << build(:element, position: 1, elementable: build(:numeric_input))
+      c2.elements << build(:element, position: 2, elementable: build(:text_input))
+      c2.elements << build(:element, position: 3, elementable: build(:text_input))
+      c2.elements << build(:element, position: 4, elementable: build(:text_input))
+
+      c1.elements << build(:element, position: 2, elementable: c2)
+      c0.elements << build(:element, position: 1, elementable: c1)
+      c0
+    }
+
+    it "doesn't write to DB until the main node (root) is saved (this is to verify the way Element(List)#<< and Container#save work)" do
+      expect {
+        container_tree
+      }
+      .to change { Container.count }.by(0)
+      .and change { NumericInput.count }.by(0)
+      .and change { TextInput.count }.by(0)
+      .and change { OptionInput.count }.by(0)
+      .and change { Element.count }.by(0)
+
+      expect {
+        container_tree.save!
+      }
+      .to change { Container.count }.by(3)
+      .and change { NumericInput.count }.by(4)
+      .and change { TextInput.count }.by(5)
+      .and change { OptionInput.count }.by(2)
+      .and change { Element.count }.by(13)
+    end
+
+
+    it "removes all nested elements (whole subtree) from the database" do
+
+      container_tree.save!
+
+      expect { container_tree.destroy! }
+      .to change { Container.count }.by(-3)
+      .and change { NumericInput.count }.by(-4)
+      .and change { TextInput.count }.by(-5)
+      .and change { OptionInput.count }.by(-2)
+      .and change { Element.count }.by(-13)
+
+    end
+  end
+
 end

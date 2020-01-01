@@ -1,10 +1,6 @@
 class Container < ApplicationRecord
   has_many :elements
 
-  has_many :numeric_inputs, through: :elements, source: :elementable, source_type: 'NumericInput'
-  has_many :text_inputs, through: :elements, source: :elementable, source_type: 'TextInput'
-  has_many :containers, through: :elements, source: :elementable, source_type: 'Container'
-
   belongs_to :inputable, polymorphic: true, optional: true
 
   validate :element_order_correct?
@@ -61,7 +57,7 @@ class Container < ApplicationRecord
   def validate_recursively!
     self.element_list.each do |e|
       if e.nil? || !e.valid?
-        errors.add(:elements)
+        errors.add(:elements, "nested subtree is invalid")
         return
       end
     end
@@ -73,7 +69,7 @@ class Container < ApplicationRecord
     self.elements.each do |e|
       n = e.variable_name
       if names.include?(n)
-        errors.add(:elements)
+        errors.add(:elements, "variable names are repeated")
         return
       else
         names << n
@@ -87,7 +83,7 @@ class Container < ApplicationRecord
     elements = self.elements.sort_by{|e| e.position}
     elements.each_with_index do |e, i|
       if e.nil? || e.position != i
-        errors.add(:elements)
+        errors.add(:elements, "order is incorrect")
         return
       end
     end
