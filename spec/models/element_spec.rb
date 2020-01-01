@@ -42,7 +42,11 @@ RSpec.describe Element, type: :model do
     expect(create(:element, elementable: build(:container)).elementable_type).to eq "Container"
   end
 
-  pending "has a correct elementable_type value (only allowed values)"
+  it "has a correct elementable_type value (only allowed values)" do
+    create(:element, elementable: build(:project))
+    pending "Should not be able to create element with a project (or other non allowed class) as elementable type"
+    fail
+  end
 
   it "has a correct, non-null and non-empty variable_name" do
     expect(build(:element, variable_name: nil)).to_not be_valid

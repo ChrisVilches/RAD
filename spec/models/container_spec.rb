@@ -245,10 +245,11 @@ RSpec.describe Container, type: :model do
       expect(c).to be_a Container
       expect(c.inputable_type).to eq "Query"
     end
+
+    pending "inputable ID must exist (according to the inputable_type value)"
   end
 
   describe "container creation & destruction" do
-    pending "splt this test into 2 or more... it tests different things at once ↓"
 
     let(:container_tree) {
       c0 = build(:container)

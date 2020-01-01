@@ -36,11 +36,12 @@ ActiveRecord::Schema.define(version: 2019_12_30_155947) do
   end
 
   create_table "containers", force: :cascade do |t|
-    t.integer "inputable_id"
+    t.bigint "inputable_id"
     t.text "is_active"
     t.string "inputable_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["inputable_id"], name: "index_containers_on_inputable_id"
   end
 
   create_table "elements", force: :cascade do |t|
