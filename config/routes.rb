@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   get '/companies/:company_url/project/:project_id/view/:view_id', to: 'views#show_without_details'
   get '/companies/:company_url/project/:project_id/view/:view_id/details', to: 'views#show_with_details'
+  put '/companies/:company_url/project/:project_id/view/:view_id', to: 'views#update'
 
   get '/companies/:company_url/project/:project_id/view/:view_id/queries', to: 'queries#index'
   post '/companies/:company_url/project/:project_id/view/:view_id/queries', to: 'queries#create'

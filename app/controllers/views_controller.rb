@@ -23,7 +23,8 @@ class ViewsController < AuthenticatedController
   # POST /views
   def create
     project = Project.find params[:project_id]
-    @view = project.views.create view_params
+    raise "Write policy!!!"
+    @view = nil # CREATE as empty
 
     if @view
       render json: @view, status: :created# TODO, location: @view
@@ -34,6 +35,16 @@ class ViewsController < AuthenticatedController
 
   # PATCH/PUT /views/1
   def update
+    authorize @view
+
+    elements = params.require(:view).require(:container).require(:elements)
+
+    ActiveRecord::Base.transaction do
+      raise "IMPLEMENT THIS"
+      @view.container.destroy!
+
+    end
+
     if @view.update(view_params)
       render json: @view
     else
@@ -52,8 +63,4 @@ class ViewsController < AuthenticatedController
       @view = View.find(params[:view_id])
     end
 
-    # Only allow a trusted parameter "white list" through.
-    def view_params
-      params.require(:view).permit(:name, :readme)
-    end
 end

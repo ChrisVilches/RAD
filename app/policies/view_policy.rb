@@ -13,6 +13,10 @@ class ViewPolicy < ApplicationPolicy
     project_participation.develop_permission
   end
 
+  def update?
+    show_with_details? # Same as developer who can see with details
+  end
+
 
   private
 
