@@ -3,7 +3,7 @@ class CreateOptionInputs < ActiveRecord::Migration[6.0]
     create_table :option_inputs do |t|
       t.integer :component_type, null: false
       t.jsonb :options, null: false
-      t.boolean :required, null: false
+      t.boolean :required, null: false, default: false
       t.timestamps
     end
   end

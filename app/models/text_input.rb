@@ -4,7 +4,6 @@ class TextInput < Input
 
   validate :range_valid?
   validate :regex_correct?
-  validates_inclusion_of :multiline, in: [true, false]
 
   before_validation :set_ranges_to_integer
 

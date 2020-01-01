@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_155947) do
     t.float "max"
     t.string "placeholder"
     t.float "excluded_values", default: [], array: true
-    t.boolean "required", null: false
+    t.boolean "required", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_155947) do
   create_table "option_inputs", force: :cascade do |t|
     t.integer "component_type", null: false
     t.jsonb "options", null: false
-    t.boolean "required", null: false
+    t.boolean "required", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -133,12 +133,12 @@ ActiveRecord::Schema.define(version: 2019_12_30_155947) do
   end
 
   create_table "text_inputs", force: :cascade do |t|
-    t.boolean "multiline", null: false
+    t.boolean "multiline", default: false, null: false
     t.string "regex"
     t.integer "min"
     t.string "placeholder"
     t.integer "max"
-    t.boolean "required", null: false
+    t.boolean "required", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

@@ -37,15 +37,24 @@ class ViewsController < AuthenticatedController
   def update
     authorize @view
 
-    elements = params.require(:view).require(:container).require(:elements)
+    view = params.require(:view)
+    container = view.require(:container)
+
+    new_container = Container.build_from_hash({ elements: container[:elements] })
+
+    save_result = false
 
     ActiveRecord::Base.transaction do
-      raise "IMPLEMENT THIS"
+
       @view.container.destroy!
 
+      new_container.save!
+      @view.container = new_container
+      save_result = @view.save
+      logger.debug @view.container.to_debug_s
     end
 
-    if @view.update(view_params)
+    if save_result
       render json: @view
     else
       render json: @view.errors, status: :unprocessable_entity

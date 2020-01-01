@@ -8,6 +8,81 @@ class Container < ApplicationRecord
   validate :validate_recursively!
   validate :all_variable_names_are_unique?
 
+  def to_debug_s
+
+    def traverse(depth, container)
+      return "" unless container.is_a?(Container)
+
+      elements = container.elements.sort_by{|e| e.position}
+      string = ""
+
+      indent = ""
+      depth.times do
+        indent << "　"
+      end
+
+      if depth > 0
+        indent << "└"
+      end
+
+      elements.each do |e|
+        string << "#{indent}#{e.elementable.class} (element ID #{e.id} | elementable_id #{e.elementable_id})\n"
+        string << traverse(depth+1, e.elementable)
+      end
+      string
+    end
+
+    traverse 0, self
+  end
+
+  # TODO Comment hash structure
+  # TODO ele[:params] || ele["params"] this should be unnecessary... just use symbols
+  def self.build_from_hash(hash, d = 0)
+
+    container = Container.new
+
+    (hash[:elements] || hash["elements"]).each_with_index do |ele, idx|
+      type = ele[:elementable_type] || ele["elementable_type"]
+
+      opts = ele[:params] || ele["params"]
+      if opts.nil?
+        opts = ActionController::Parameters.new
+      end
+      elementable = nil
+
+      elementable = case type
+      when "NumericInput"
+        # TODO These parameters could be in a model method.
+        # NumericInput#configurable_params => [:max, :min, etc]
+        NumericInput.new(opts.permit(:min, :max, :placeholder, :required, :number_set, excluded_values: []))
+      when "TextInput"
+        TextInput.new(opts.permit(:multiline, :regex, :min, :placeholder, :max, :required))
+      when "Container"
+        # Build recursively
+        new_container = Container.build_from_hash(ele, d+1)
+        new_container.attributes = ele.permit(:is_active)
+        new_container
+      when "OptionInput"
+        OptionInput.new(opts.permit(:component_type, :required, options: [:label, :value]))
+      else
+        raise "Incorrect type: #{type}"
+      end
+
+      element = Element.new(
+        variable_name: ele[:variable_name] || "variable-#{idx}",
+        position: idx,
+        elementable: elementable,
+        label: ele[:label] || "Component label"
+      )
+
+      container.elements << element
+
+    end
+
+    container
+  end
+
+
   # In case the design ever changes, this is a method that returns the list of
   # elements inside the container. If the database structure changes, then this method
   # must be changed, but without affecting the result.
@@ -56,9 +131,15 @@ class Container < ApplicationRecord
   # It also checks that all elements (including inputs, etc) have a correct
   # elementable.
   def validate_recursively!
+
     self.element_list.each do |e|
-      if e.nil? || !e.valid?
-        errors.add(:elements, "nested subtree is invalid")
+      if e.nil?
+        errors.add(:elements, "has a nil element")
+        return
+      end
+
+      if !e.valid?
+        errors.add(:elements, "nested subtree is invalid (Details: #{e.errors.full_messages})")
         return
       end
     end
