@@ -183,7 +183,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_155947) do
   end
 
   add_foreign_key "connections", "projects"
-  add_foreign_key "elements", "containers"
+  add_foreign_key "elements", "containers", on_delete: :cascade
   add_foreign_key "participations", "companies"
   add_foreign_key "participations", "users"
   add_foreign_key "project_participations", "projects"

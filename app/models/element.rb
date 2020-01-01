@@ -1,5 +1,6 @@
 class Element < ApplicationRecord
-  belongs_to :elementable, :polymorphic => true
+
+  belongs_to :elementable, :polymorphic => true, dependent: :destroy
   belongs_to :container
   validates :elementable, presence: true
   validate :allowed_elementable_value?

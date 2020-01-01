@@ -1,5 +1,6 @@
 class Container < ApplicationRecord
-  has_many :elements
+
+  has_many :elements, dependent: :destroy
 
   belongs_to :inputable, polymorphic: true, optional: true
 

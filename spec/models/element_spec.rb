@@ -8,7 +8,7 @@ RSpec.describe Element, type: :model do
     expect(element.elementable).to be_kind_of NumericInput
   end
 
-  it "element is not validated immediately when using build (FactoryBot)" do
+  it "is not validated immediately when using build (FactoryBot)" do
     element = nil
     num = build(:numeric_input)
     expect(num.id).to be nil
