@@ -2,6 +2,10 @@ class Input < ApplicationRecord
 
   has_one :element
 
+  def self.configurable_params
+    raise NotImplementedError
+  end
+
   protected
 
   def validate_input_value(value)

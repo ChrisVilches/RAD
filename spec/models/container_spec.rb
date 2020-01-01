@@ -15,6 +15,8 @@ RSpec.describe Container, type: :model do
     expect(c.elements[1].elementable).to eq numeric_input
   end
 
+  pending "empty containers and/or empty subtrees are cleaned and not saved to the DB (TODO is it necessary?)"
+
   it "elements are saved whenever the container is saved (using build instead of create for building objects)" do
     c = build(:container)
     c.elements << build(:element, elementable: build(:numeric_input), position: 0)

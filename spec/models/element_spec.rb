@@ -20,7 +20,45 @@ RSpec.describe Element, type: :model do
     expect(element.elementable_id).to_not be nil # ID generated as well
   end
 
-  pending "ensures elements that have a Container elementable have optional label, but those that are not Containers must have a label"
+
+  it "ensures elements that have a Container elementable have optional label, but those that are not Containers must have a label" do
+
+    num = build(:element, label: nil, elementable: build(:numeric_input))
+    txt = build(:element, label: nil, elementable: build(:text_input))
+    opt = build(:element, label: nil, elementable: build(:option_input))
+    con = build(:element, label: nil, elementable: build(:container))
+
+    expect(num).to_not be_valid
+    expect(txt).to_not be_valid
+    expect(opt).to_not be_valid
+    expect(con).to be_valid
+
+    num = build(:element, label: "", elementable: build(:numeric_input))
+    txt = build(:element, label: "  ", elementable: build(:text_input))
+    opt = build(:element, label: "", elementable: build(:option_input))
+    con = build(:element, label: "", elementable: build(:container))
+
+    expect(num).to_not be_valid
+    expect(txt).to_not be_valid
+    expect(opt).to_not be_valid
+    expect(con).to be_valid
+
+    num = build(:element, label: "a", elementable: build(:numeric_input))
+    txt = build(:element, label: "b", elementable: build(:text_input))
+    opt = build(:element, label: "c", elementable: build(:option_input))
+    con = build(:element, label: "d", elementable: build(:container))
+
+    expect(num).to be_valid
+    expect(txt).to be_valid
+    expect(opt).to be_valid
+    expect(con).to be_valid
+
+    con.save!
+    con.reload
+    expect(con.label).to eq "d" # Label is not required but it can be assigned.
+  end
+
+
   pending "ensures that (non-container) elements can have description but not containers"
 
   it "database composite key is unique" do

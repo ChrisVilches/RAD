@@ -3,8 +3,10 @@ class Element < ApplicationRecord
   belongs_to :elementable, :polymorphic => true, dependent: :destroy
   belongs_to :container
   validates :elementable, presence: true
+  strip_attributes only: [:label, :variable_name]
   validate :allowed_elementable_value?
   validate :correct_variable_name?
+  validate :label_requirement_satisfied? # Only containers don't need
 
   before_validation :compute_position!
   before_validation :set_correct_elementable_type!
@@ -38,8 +40,17 @@ class Element < ApplicationRecord
 
   def correct_variable_name?
 
-    if self.variable_name.nil? || (self.variable_name.match VARIABLE_NAME_REGEX).nil?
+    if self.variable_name.nil? || self.variable_name.length == 0 || (self.variable_name.match VARIABLE_NAME_REGEX).nil?
       errors.add :variable_name
+    end
+  end
+
+  def label_requirement_satisfied?
+    type = self.elementable_type
+    return if type == Container.to_s
+    label = self.label
+    if label.nil? || label.length == 0
+      errors.add :label
     end
   end
 end

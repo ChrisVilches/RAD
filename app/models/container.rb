@@ -8,6 +8,8 @@ class Container < ApplicationRecord
   validate :validate_recursively!
   validate :all_variable_names_are_unique?
 
+  before_validation :remove_empty_container_subtrees!
+
   def to_debug_s
 
     def traverse(depth, container)
@@ -32,38 +34,37 @@ class Container < ApplicationRecord
       string
     end
 
-    traverse 0, self
+    ret = "Created #{self.created_at}\n"
+    ret << "Updated #{self.updated_at}\n"
+    ret << traverse(0, self)
+    ret
+
   end
 
   # TODO Comment hash structure
-  # TODO ele[:params] || ele["params"] this should be unnecessary... just use symbols
   def self.build_from_hash(hash, d = 0)
 
     container = Container.new
 
-    (hash[:elements] || hash["elements"]).each_with_index do |ele, idx|
-      type = ele[:elementable_type] || ele["elementable_type"]
+    hash[:elements].each_with_index do |ele, idx|
+      type = ele[:elementable_type]
 
-      opts = ele[:params] || ele["params"]
-      if opts.nil?
-        opts = ActionController::Parameters.new
-      end
+      opts = ele[:params].nil? ? ActionController::Parameters.new : ele[:params]
+
       elementable = nil
 
       elementable = case type
       when "NumericInput"
-        # TODO These parameters could be in a model method.
-        # NumericInput#configurable_params => [:max, :min, etc]
-        NumericInput.new(opts.permit(:min, :max, :placeholder, :required, :number_set, excluded_values: []))
+        NumericInput.new(opts.permit(NumericInput.configurable_params))
       when "TextInput"
-        TextInput.new(opts.permit(:multiline, :regex, :min, :placeholder, :max, :required))
+        TextInput.new(opts.permit(TextInput.configurable_params))
+      when "OptionInput"
+        OptionInput.new(opts.permit(OptionInput.configurable_params))
       when "Container"
         # Build recursively
         new_container = Container.build_from_hash(ele, d+1)
         new_container.attributes = ele.permit(:is_active)
         new_container
-      when "OptionInput"
-        OptionInput.new(opts.permit(:component_type, :required, options: [:label, :value]))
       else
         raise "Incorrect type: #{type}"
       end
@@ -169,5 +170,9 @@ class Container < ApplicationRecord
         return
       end
     end
+  end
+
+  def remove_empty_container_subtrees!
+
   end
 end

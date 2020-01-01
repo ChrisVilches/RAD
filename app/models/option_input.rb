@@ -7,6 +7,10 @@ class OptionInput < Input
 
   enum component_type: { pulldown: 0, radio: 1, checkbox: 2 }
 
+  def self.configurable_params
+    [:component_type, :required, options: [:label, :value]]
+  end
+
   def validate_input_value(list)
 
     super

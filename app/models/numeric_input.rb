@@ -11,6 +11,10 @@ class NumericInput < Input
 
   enum number_set: { decimal: 0, integer: 1, binary: 2 }
 
+  def self.configurable_params
+    [:min, :max, :placeholder, :required, :number_set, excluded_values: []]
+  end
+
   def validate_input_value(value)
 
     super

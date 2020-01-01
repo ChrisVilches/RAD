@@ -7,6 +7,10 @@ class TextInput < Input
 
   before_validation :set_ranges_to_integer
 
+  def self.configurable_params
+    [:multiline, :regex, :min, :placeholder, :max, :required]
+  end
+
   def validate_input_value(value)
 
     super
