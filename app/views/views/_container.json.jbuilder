@@ -8,7 +8,8 @@ json.elements(container.nil? ? [] : container.elements) do |element|
 
     container = element.elementable
     json.partial!("container", container: container)
-    json.is_active container.is_active
+    json.is_active container.is_active # TODO Should be in params... because its specific to containers.
+    json.label element.label
   else
     json.label element.label
     json.description element.description
