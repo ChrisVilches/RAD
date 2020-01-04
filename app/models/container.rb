@@ -1,5 +1,7 @@
 class Container < ApplicationRecord
 
+  include FormComponent
+
   has_many :elements, dependent: :destroy
 
   belongs_to :inputable, polymorphic: true, optional: true
@@ -9,6 +11,10 @@ class Container < ApplicationRecord
   validate :all_variable_names_are_unique?
 
   before_validation :remove_empty_container_subtrees!
+
+  def self.configurable_params
+    [:is_active]
+  end
 
   def to_debug_s
 
@@ -63,7 +69,7 @@ class Container < ApplicationRecord
       when "Container"
         # Build recursively
         new_container = Container.build_from_hash(ele, d+1)
-        new_container.attributes = ele.permit(:is_active)
+        new_container.attributes = opts.permit(Container.configurable_params)
         new_container
       else
         raise "Incorrect type: #{type}"

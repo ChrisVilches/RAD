@@ -1,10 +1,8 @@
 class Input < ApplicationRecord
 
-  has_one :element
+  include FormComponent
 
-  def self.configurable_params
-    raise NotImplementedError
-  end
+  has_one :element
 
   protected
 

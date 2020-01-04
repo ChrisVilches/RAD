@@ -12,14 +12,12 @@ class ViewsController < AuthenticatedController
   # They cannot see details such as SQL code, etc.
   def show_without_details
     authorize @view
-    logger.debug @view.container.to_debug_s
   end
 
   # GET /views/1/details
   # For users with developer permissions.
   def show_with_details
     authorize @view
-    logger.debug @view.container.to_debug_s
   end
 
   # POST /views
