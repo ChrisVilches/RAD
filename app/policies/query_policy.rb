@@ -13,6 +13,14 @@ class QueryPolicy < ApplicationPolicy
     return project_participation.develop_permission
   end
 
+  def destroy?
+    create?
+  end
+
+  def update?
+    create?
+  end
+
   private
 
   def joined_project

@@ -17,9 +17,10 @@ Rails.application.routes.draw do
 
   get '/companies/:company_url/project/:project_id/view/:view_id/queries', to: 'queries#index'
   post '/companies/:company_url/project/:project_id/view/:view_id/queries', to: 'queries#create'
-  get '/companies/:company_url/project/:project_id/view/:view_id/queries/:query_id', to: 'queries#show'
-  put '/companies/:company_url/project/:project_id/view/:view_id/queries/:query_id', to: 'queries#update'
-  get '/companies/:company_url/project/:project_id/view/:view_id/queries/:query_id/log', to: 'query_histories#index'
+  get '/companies/:company_url/project/:project_id/view/:view_id/query/:query_id', to: 'queries#show'
+  put '/companies/:company_url/project/:project_id/view/:view_id/query/:query_id', to: 'queries#update'
+  delete '/companies/:company_url/project/:project_id/view/:view_id/query/:query_id', to: 'queries#destroy'
+  get '/companies/:company_url/project/:project_id/view/:view_id/query/:query_id/log', to: 'query_histories#index'
 
   post '/companies/:company_url/query/:query_id/execute', to: 'queries#execute'
 

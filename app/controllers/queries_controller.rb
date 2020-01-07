@@ -3,6 +3,7 @@ class QueriesController < AuthenticatedController
 
   # GET /queries
   def index
+    # TODO authorize
     view = View.where(project_id: params[:project_id], id: params[:view_id]).first
     @queries = view.queries
     render json: @queries
@@ -10,6 +11,7 @@ class QueriesController < AuthenticatedController
 
   # GET /queries/1
   def show
+    # TODO authorize
     render json: @query, include: :content
   end
 
@@ -17,6 +19,7 @@ class QueriesController < AuthenticatedController
   def create
 
     view = View.where(id: params[:view_id], project_id: params[:project_id]).first
+    # TODO must authorize view before creating a query for it
     @query = view.queries.create query_params
     authorize @query
 
@@ -58,14 +61,32 @@ class QueriesController < AuthenticatedController
   # PATCH/PUT /queries/1
   def update
 
-    comment = params[:comment] || ""
-    config_version = params[:config_version],
-    content = params[:content]
+    authorize @query.view
 
-    new_revision = @query.query_histories << QueryHistory.new(comment: comment, config_version: config_version, content: content)
+    query = params.require :query
 
-    if new_revision
-      render json: @query, include: :content
+    comment = query[:comment] || ""
+    config_version = params[:config_version]
+    code = query[:code] || ""
+
+    new_container = Container.build_from_hash({ elements: query.require(:container)[:elements] })
+    new_container.validate!
+
+    save_result = false
+
+    ActiveRecord::Base.transaction do
+      @query.container.destroy! unless @query.container.nil?
+      @query.container = new_container
+      logger.debug @query.container.to_debug_s
+      save_result = @query.save
+    end
+
+    if @query.latest_revision.nil? || @query.latest_revision.content != code
+      new_revision = @query.query_histories << QueryHistory.new(comment: comment, config_version: config_version, content: { sql: code })
+    end
+
+    if save_result
+      render json: @query
     else
       render json: @query.errors, status: :unprocessable_entity
     end
@@ -73,7 +94,9 @@ class QueriesController < AuthenticatedController
 
   # DELETE /queries/1
   def destroy
+    authorize @query
     @query.destroy
+    render json: @query
   end
 
   private

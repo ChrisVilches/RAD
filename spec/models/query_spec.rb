@@ -22,5 +22,6 @@ RSpec.describe Query, type: :model do
   end
 
   pending "doesn't create a new revision if the code saved is the same as the latest revision"
+  pending "query histories are also deleted when the query is destroyed"
 
 end

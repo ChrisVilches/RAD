@@ -14,6 +14,10 @@ json.view do
     json.id query.id
     json.name query.name
     json.latest_revision query.latest_revision
+    json.log(query.query_histories.order(id: "desc").limit(5)) do |log|
+      json.content log.content
+      json.comment log.comment
+    end
     json.description query.description
     json.container do
       json.partial!("container", container: query.container)

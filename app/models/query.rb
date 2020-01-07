@@ -1,5 +1,5 @@
 class Query < ApplicationRecord
-  has_many :query_histories
+  has_many :query_histories, dependent: :destroy
   belongs_to :view
   has_one :container, as: :inputable
 
