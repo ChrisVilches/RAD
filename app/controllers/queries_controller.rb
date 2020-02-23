@@ -70,26 +70,30 @@ class QueriesController < AuthenticatedController
     code = query[:code] || ""
 
     new_container = Container.build_from_hash({ elements: query.require(:container)[:elements] })
-    new_container.validate!
+
+    # Container is incorrect, so return error information
+    unless new_container.validate
+      render json: new_container.errors, status: :unprocessable_entity
+      return
+    end
 
     save_result = false
 
     ActiveRecord::Base.transaction do
       @query.container.destroy! unless @query.container.nil?
       @query.container = new_container
-      logger.debug @query.container.to_debug_s
-      save_result = @query.save
+
+      if @query.save
+        if @query.latest_revision.nil? || @query.latest_revision.content["sql"] != code
+          @query.query_histories << QueryHistory.new(comment: comment, config_version: config_version, content: { sql: code })
+        end
+        logger.debug @query.container.to_debug_s
+        render json: @query
+        return
+      end
     end
 
-    if @query.latest_revision.nil? || @query.latest_revision.content != code
-      new_revision = @query.query_histories << QueryHistory.new(comment: comment, config_version: config_version, content: { sql: code })
-    end
-
-    if save_result
-      render json: @query
-    else
-      render json: @query.errors, status: :unprocessable_entity
-    end
+    render json: @query.errors, status: :unprocessable_entity
   end
 
   # DELETE /queries/1

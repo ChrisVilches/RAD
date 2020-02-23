@@ -41,7 +41,12 @@ class ViewsController < AuthenticatedController
     container = view.require(:container)
 
     new_container = Container.build_from_hash({ elements: container[:elements] })
-    new_container.validate!
+
+    # Container is incorrect, so return error information
+    unless new_container.validate
+      render json: new_container.errors, status: :unprocessable_entity
+      return
+    end
 
     save_result = false
 
