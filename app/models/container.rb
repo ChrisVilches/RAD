@@ -34,7 +34,7 @@ class Container < ApplicationRecord
       end
 
       elements.each do |e|
-        string << "#{indent}#{e.elementable.class} (element ID #{e.id} | elementable_id #{e.elementable_id})\n"
+        string << "#{indent}#{e.elementable.class} (element ID #{e.id} | elementable_id #{e.elementable_id}) | variable name #{e.variable_name}\n"
         string << traverse(depth+1, e.elementable)
       end
       string
