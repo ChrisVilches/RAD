@@ -15,6 +15,8 @@ RSpec.describe Container, type: :model do
     expect(c.elements[1].elementable).to eq numeric_input
   end
 
+  pending "containers can have empty label when saving it to the database. However, since label belongs to 'elements' and due to DB constraints it cannot be null, it becomes empty string when saving a null"
+
   pending "empty containers and/or empty subtrees are cleaned and not saved to the DB (TODO is it necessary?)"
 
   it "elements are saved whenever the container is saved (using build instead of create for building objects)" do
