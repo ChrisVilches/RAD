@@ -1,13 +1,14 @@
 class Element < ApplicationRecord
 
+  strip_attributes only: [:label, :variable_name]
   belongs_to :elementable, :polymorphic => true, dependent: :destroy
   belongs_to :container
   validates :elementable, presence: true
-  strip_attributes only: [:label, :variable_name]
   validate :allowed_elementable_value?
   validate :correct_variable_name?
   validate :label_requirement_satisfied? # Only containers don't need
 
+  before_validation :allow_nil_label_for_containers!
   before_validation :compute_position!
   before_validation :set_correct_elementable_type!
 
@@ -36,6 +37,15 @@ class Element < ApplicationRecord
     return if self.container_id.nil?
 
     self.position = Element.where(container: self.container).count
+  end
+
+  # Elements table cannot have null label due to database constraints, but the
+  # container element can have a blank label so this method makes a null label
+  # become an empty string so that it can be saved to DB.
+  def allow_nil_label_for_containers!
+    if self.label.nil?
+      self.label = ""
+    end
   end
 
   def correct_variable_name?
