@@ -16,6 +16,58 @@ class Container < ApplicationRecord
     [:is_active]
   end
 
+  # Used for getting the error structures for client screens,
+  # ViewEdit and QueryEdit.
+  # Errors that nested subtrees have in a container, won't count as an error,
+  # and it won't be in the final output, however errors in the container itself
+  # such as lack of variable_name will be in the output.
+  # @return [Hash] Hash with a tree structure same as the form tree, but only containing error (boolean) information.
+  def error_structure
+
+    # Root node doesn't need to be validated. Because this is the Container
+    # class, and not the Element class that contains it, it's impossible to validate
+    # things like variable_name (since it belongs to Element).
+
+    def traverse(node, root = false)
+      raise "node arg should be an Element" unless node.is_a?(Element)
+      if node.elementable.is_a?(Container)
+        container = node.elementable
+        elements = []
+        container.elements.each do |e|
+          elements << traverse(e)
+        end
+
+        container_valid = false
+
+        # If it's the root, don't validate.
+        if root
+          container_valid = true
+        else
+          # Validate the node but skipping its nested subtree.
+          container.temporarily_strip_elements do
+            container_valid = node.valid?
+          end
+        end
+
+        # Validate again just to get the :elements_unique_variable_names (error)
+        container.validate
+        # Add errors to elements that have variable_name used in more than one place
+        container.errors[:elements_unique_variable_names].each do |err|
+          if err.is_a?(Hash) && err.has_key?(:index_repeated)
+            idx = err[:index_repeated]
+            elements[idx][:error] = true
+          end
+        end
+        { error: !container_valid, elements: elements }
+      else
+        { error: !node.valid? }
+      end
+    end
+
+    elem = Element.new elementable: self
+    traverse(elem, true)
+  end
+
   def to_debug_s
 
     def traverse(depth, container)
@@ -93,6 +145,7 @@ class Container < ApplicationRecord
   # In case the design ever changes, this is a method that returns the list of
   # elements inside the container. If the database structure changes, then this method
   # must be changed, but without affecting the result.
+  # TODO Should not be used? sometimes it's useful to know the Element properties as well.
   # @return [Array] List of Element
   def element_list
     list = []
@@ -114,6 +167,23 @@ class Container < ApplicationRecord
     end
 
     return errors.to_a
+  end
+
+  # This is mainly used to avoid validating the nested subtree, or to avoid
+  # some expensive computation due to having a large nested subtree.
+  # @return void
+  def temporarily_strip_elements
+    elems = self.elements
+    begin
+      elements = [] # Strip
+      yield
+    ensure
+      elements = elems # Put them back
+    end
+  end
+
+  def valid_ignoring_nested_subtree?
+
   end
 
   private
@@ -139,14 +209,14 @@ class Container < ApplicationRecord
   # elementable.
   def validate_recursively!
 
-    self.element_list.each do |e|
-      if e.nil?
+    self.elements.each do |e|
+      if e.nil? || e.elementable.nil?
         errors.add(:elements, "has a nil element")
         return
       end
 
       if !e.valid?
-        errors.add(:elements, "nested subtree is invalid (Details: #{e.errors.full_messages})")
+        errors.add(:elements_recursive_subtree, "nested subtree is invalid (Details: #{e.errors.full_messages})")
         return
       end
     end
@@ -154,14 +224,26 @@ class Container < ApplicationRecord
 
   # Checks that all variable names are unique.
   def all_variable_names_are_unique?
-    names = Set.new
-    self.elements.each do |e|
-      n = e.variable_name
-      if names.include?(n)
-        errors.add(:elements, "variable names are repeated")
-        return
+
+    error_index = Array.new
+    first_occurrences = Hash.new
+    self.elements.each_with_index do |elem, idx|
+      variable_name = elem.variable_name
+      if first_occurrences.has_key?(variable_name)
+        first_idx = first_occurrences[variable_name]
+        # Add error to current idx and first occurrence
+        error_index << idx
+        error_index << first_idx
       else
-        names << n
+        first_occurrences[variable_name] = idx
+      end
+    end
+
+    unless error_index.empty?
+      error_index.sort!
+      error_index.uniq!
+      error_index.each do |idx|
+        errors.add(:elements_unique_variable_names, { :index_repeated => idx })
       end
     end
   end
@@ -179,6 +261,6 @@ class Container < ApplicationRecord
   end
 
   def remove_empty_container_subtrees!
-
+    # TODO removes unused containers
   end
 end

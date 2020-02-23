@@ -20,6 +20,11 @@ RSpec.describe Element, type: :model do
     expect(element.elementable_id).to_not be nil # ID generated as well
   end
 
+  it "is valid only if its elementable is also valid" do
+    expect(build(:element, elementable: nil)).to_not be_valid
+    expect(build(:element, elementable: build(:numeric_input))).to be_valid
+    expect(build(:element, elementable: build(:numeric_input, min: 5, max: 2))).to_not be_valid
+  end
 
   it "ensures elements that have a Container elementable have optional label, but those that are not Containers must have a label" do
 

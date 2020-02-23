@@ -7,6 +7,7 @@ class Element < ApplicationRecord
   validate :allowed_elementable_value?
   validate :correct_variable_name?
   validate :label_requirement_satisfied? # Only containers don't need
+  validate :elementable_also_valid?
 
   before_validation :allow_nil_label_for_containers!
   before_validation :compute_position!
@@ -61,6 +62,12 @@ class Element < ApplicationRecord
     label = self.label
     if label.nil? || label.length == 0
       errors.add :label
+    end
+  end
+
+  def elementable_also_valid?
+    if self.elementable.nil? || !self.elementable.valid?
+      errors.add :elementable
     end
   end
 end
