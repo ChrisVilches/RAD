@@ -43,11 +43,19 @@ class Container < ApplicationRecord
         if root
           container_valid = true
         else
-          # Validate the node but skipping its nested subtree.
-          container.temporarily_strip_elements do
-            container_valid = node.valid?
-          end
+          # Only validate THIS container isolated without picking up
+          # errors recursively from its children.
+          node.validate
+          error_keys = container.errors.to_h.keys.uniq
+          error_keys.delete :elements
+          error_keys.delete :elements_recursive_subtree
+          container_valid = error_keys.empty?
         end
+
+        # TODO this can be optimized so that only one "validate" is executed,
+        # and for one part we ignore the elements_unique_variable_names, and for
+        # the other one we do use it. But for now this works, it just does the
+        # validation twice.
 
         # Validate again just to get the :elements_unique_variable_names (error)
         container.validate
@@ -169,23 +177,6 @@ class Container < ApplicationRecord
     return errors.to_a
   end
 
-  # This is mainly used to avoid validating the nested subtree, or to avoid
-  # some expensive computation due to having a large nested subtree.
-  # @return void
-  def temporarily_strip_elements
-    elems = self.elements
-    begin
-      elements = [] # Strip
-      yield
-    ensure
-      elements = elems # Put them back
-    end
-  end
-
-  def valid_ignoring_nested_subtree?
-
-  end
-
   private
 
   def find_element_from_path(path)
@@ -262,5 +253,9 @@ class Container < ApplicationRecord
 
   def remove_empty_container_subtrees!
     # TODO removes unused containers
+  end
+
+  def valid_ignoring_nested_subtree?
+
   end
 end
