@@ -2,6 +2,7 @@ class Query < ApplicationRecord
   has_many :query_histories, dependent: :destroy
   belongs_to :view
   has_one :container, as: :inputable
+  has_and_belongs_to_many :connections
 
   validate :config_is_correct?
 

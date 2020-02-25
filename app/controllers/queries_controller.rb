@@ -15,6 +15,22 @@ class QueriesController < AuthenticatedController
     render json: @query, include: :content
   end
 
+  # POST /project/1/view/2/query/3/add_connection
+  def add_connection
+    conn = Connection.find_by_id params[:connection_id]
+    query = Query.find_by_id params[:query_id]
+    query.connections << conn
+    render json: query.connections, status: :ok
+  end
+
+  # DELETE /project/1/view/2/query/3/remove_connection
+  def remove_connection
+    conn = Connection.find_by_id params[:connection_id]
+    query = Query.find_by_id params[:query_id]
+    query.connections.delete conn
+    render json: query.connections, status: :ok
+  end
+
   # POST /queries
   def create
 
@@ -35,7 +51,9 @@ class QueriesController < AuthenticatedController
 
     authorize @query
 
-    conn = Connection.new
+    conn = Connection.find_by_id params[:connection_id]
+
+    # TODO validate connection and its permissions against user
 
     global_user_input = params[:global]
     query_user_input = params[:query]

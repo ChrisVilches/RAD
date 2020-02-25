@@ -3,6 +3,12 @@ class AuthenticatedController < ActionController::API
 
   include Pundit
 
+  # TODO maybe this class could have more stuff like...
+  # Before every action get the company, project, etc. Get everything
+  # in the URL, because the URL always contains all of that, and there are
+  # a few controllers that have to be manually fetching that data all the time,
+  # which wastes code space.
+
   before_action :authenticate_user!
   before_action :ensure_user_joined_company
 

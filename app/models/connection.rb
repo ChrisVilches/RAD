@@ -1,8 +1,8 @@
 class Connection < ApplicationRecord
   belongs_to :project
+  has_and_belongs_to_many :users
 
   def execute_query(query, query_params = [], global_params = [])
-
     sql = query.build_sql(query_params, global_params)
 
     config = {

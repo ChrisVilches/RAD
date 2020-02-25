@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_30_155947) do
+ActiveRecord::Schema.define(version: 2019_12_30_455967) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,22 @@ ActiveRecord::Schema.define(version: 2019_12_30_155947) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["project_id"], name: "index_connections_on_project_id"
+  end
+
+  create_table "connections_queries", force: :cascade do |t|
+    t.bigint "query_id", null: false
+    t.bigint "connection_id", null: false
+    t.index ["connection_id"], name: "index_connections_queries_on_connection_id"
+    t.index ["query_id", "connection_id"], name: "index_connections_queries_on_query_id_and_connection_id", unique: true
+    t.index ["query_id"], name: "index_connections_queries_on_query_id"
+  end
+
+  create_table "connections_users", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "connection_id", null: false
+    t.index ["connection_id"], name: "index_connections_users_on_connection_id"
+    t.index ["user_id", "connection_id"], name: "index_connections_users_on_user_id_and_connection_id", unique: true
+    t.index ["user_id"], name: "index_connections_users_on_user_id"
   end
 
   create_table "containers", force: :cascade do |t|
@@ -184,6 +200,10 @@ ActiveRecord::Schema.define(version: 2019_12_30_155947) do
   end
 
   add_foreign_key "connections", "projects"
+  add_foreign_key "connections_queries", "connections"
+  add_foreign_key "connections_queries", "queries"
+  add_foreign_key "connections_users", "connections"
+  add_foreign_key "connections_users", "users"
   add_foreign_key "elements", "containers", on_delete: :cascade
   add_foreign_key "participations", "companies"
   add_foreign_key "participations", "users"

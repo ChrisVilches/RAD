@@ -1,5 +1,5 @@
 class ProjectsController < AuthenticatedController
-  before_action :set_project, only: [:show, :update, :destroy]
+  before_action :set_project, only: [:show, :update, :destroy, :project_connections]
 
   # GET /projects
   def index
@@ -7,7 +7,7 @@ class ProjectsController < AuthenticatedController
     render json: @projects
   end
 
-  # GET /projects/1
+  # GET /project/1
   def show
     authorize @project
     render json: @project
@@ -28,7 +28,7 @@ class ProjectsController < AuthenticatedController
     end
   end
 
-  # PATCH/PUT /projects/1
+  # PATCH/PUT /project/1
   def update
     if @project.update(project_params)
       render json: @project
@@ -37,7 +37,7 @@ class ProjectsController < AuthenticatedController
     end
   end
 
-  # DELETE /projects/1
+  # DELETE /project/1
   def destroy
     @project.destroy
   end

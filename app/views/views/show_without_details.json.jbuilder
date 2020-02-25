@@ -17,6 +17,7 @@ json.view do
     json.container do
       json.partial!("container", container: query.container)
     end
+    json.connections query.connections
   end
 
 end
