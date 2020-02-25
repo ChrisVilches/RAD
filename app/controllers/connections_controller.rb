@@ -3,17 +3,16 @@ class ConnectionsController < AuthenticatedController
   # GET /project/1/connections
   def index
     project = Project.find_by_id params[:project_id]
-    connections = project.connections
-    authorize connections
-    # TODO should render the connections only the user can see I guess...
-    # and also only if the user has permissions to see connections at all.
-    render json: connections, include: :users, status: :ok
+    authorize project, policy_class: ConnectionPolicy
+    render json: project.connections, include: :users, status: :ok
   end
 
   # POST /project/1/connection/2/add_user
   def add_user
     conn = Connection.find_by_id params[:connection_id]
     user = User.find_by_id params[:user_id]
+
+    authorize conn
 
     # TODO check and test this code.
     # Check the user to be added is in the same project as the connection.
@@ -41,7 +40,7 @@ class ConnectionsController < AuthenticatedController
     authorize conn
 
     if conn.save
-      render json: conn, status: :created
+      render json: conn, include: :users, status: :created
     else
       render json: conn, status: :unprocessable_entity
     end

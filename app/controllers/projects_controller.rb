@@ -3,7 +3,7 @@ class ProjectsController < AuthenticatedController
 
   # GET /projects
   def index
-    @projects = current_user.projects.where(company: current_company)
+    @projects = policy_scope(Project).where(company: current_company)
     render json: @projects
   end
 

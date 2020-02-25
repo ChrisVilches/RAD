@@ -17,7 +17,6 @@ class ViewPolicy < ApplicationPolicy
     show_with_details? # Same as developer who can see with details
   end
 
-
   private
 
   def joined_project

@@ -1,4 +1,9 @@
 class ProjectPolicy < ApplicationPolicy
+
+  def index?
+    false
+  end
+
   def create?
 
     # First check if the user belongs to that company (the one to which the project will be created).
@@ -15,4 +20,11 @@ class ProjectPolicy < ApplicationPolicy
     joined_project = @user.project_participations.find_by(project_id: @record.id)
     !joined_project.nil?
   end
+
+  class Scope < Scope
+    def resolve
+      scope.joins(:project_participations).where('project_participations.user_id' => user.id)
+    end
+  end
+
 end

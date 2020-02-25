@@ -6,9 +6,6 @@ class ApplicationPolicy
     @record = record
   end
 
-  # TODO this scaffolding should be deleted for more security.
-  # To avoid leaked allowed actions.
-
   def index?
     false
   end
