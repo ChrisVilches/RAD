@@ -46,9 +46,15 @@ class Container < ApplicationRecord
           # Only validate THIS container isolated without picking up
           # errors recursively from its children.
           node.validate
-          error_keys = container.errors.to_h.keys.uniq
+          error_keys = container.errors.keys.uniq
           error_keys.delete :elements
           error_keys.delete :elements_recursive_subtree
+
+          # After having processed the container errors (and removed the ones
+          # that have to be ignored, add the node errors... here there might be
+          # for example a variable_name error, etc)
+          error_keys += node.errors.keys
+          error_keys.uniq!
           container_valid = error_keys.empty?
         end
 

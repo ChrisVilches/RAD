@@ -86,9 +86,11 @@ RSpec.describe Element, type: :model do
   end
 
   it "has a correct elementable_type value (only allowed values)" do
-    create(:element, elementable: build(:project))
-    pending "Should not be able to create element with a project (or other non allowed class) as elementable type"
-    fail
+    expect(build(:element, elementable: build(:project))).to_not be_valid
+    expect(build(:element, elementable: build(:user))).to_not be_valid
+    expect(build(:element, elementable: build(:element))).to_not be_valid
+    expect(build(:element, elementable: build(:numeric_input))).to be_valid
+    expect(build(:element, elementable: build(:text_input))).to be_valid
   end
 
   it "has a correct, non-null and non-empty variable_name" do

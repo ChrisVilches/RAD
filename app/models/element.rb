@@ -26,7 +26,9 @@ class Element < ApplicationRecord
 
   def allowed_elementable_value?
     allowed = [TextInput, NumericInput, OptionInput, Container]
-    return allowed.map{|c| c.to_s}.include?(self.elementable_type)
+    unless allowed.map{|c| c.to_s}.include?(self.elementable_type)
+      errors.add :elementable_type
+    end
   end
 
   def compute_position!
