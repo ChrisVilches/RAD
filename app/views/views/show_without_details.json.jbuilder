@@ -17,7 +17,12 @@ json.view do
     json.container do
       json.partial!("container", container: query.container)
     end
-    json.connections query.connections
+
+    # Connections that the user can execute.
+    json.connections_allowed_to_user(query.connections_allowed_to(current_user)) do |conn|
+      json.id conn.id
+      json.name conn.name
+    end
   end
 
 end

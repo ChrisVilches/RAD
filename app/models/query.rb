@@ -87,6 +87,22 @@ class Query < ApplicationRecord
     }
   end
 
+  def connections_allowed_to(user)
+
+    user_id = nil
+    if user.is_a?(User)
+      user_id = user.id
+    elsif user.is_a?(Numeric)
+      user_id = user
+    end
+
+    raise "User is null. Should be User or Numeric." if user_id.nil?
+
+    self.connections
+    .joins(:connections_users)
+    .where('connections_users.user_id': user_id)
+  end
+
   def build_sql(query_params = [], global_params = [])
 
     input_errors = self.input_parameters_errors(query_params, global_params)

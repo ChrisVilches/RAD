@@ -10,7 +10,12 @@ class ProjectsController < AuthenticatedController
   # GET /project/1
   def show
     authorize @project
-    render json: @project
+    result = @project.attributes
+
+    result[:company_permissions] = current_user.company_permissions(@project.company)
+    result[:project_permissions] = current_user.project_permissions(@project)
+
+    render json: result
   end
 
   # POST /projects

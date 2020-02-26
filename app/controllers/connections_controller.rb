@@ -3,7 +3,7 @@ class ConnectionsController < AuthenticatedController
   # GET /project/1/connections
   def index
     project = Project.find_by_id params[:project_id]
-    authorize project, policy_class: ConnectionPolicy
+    authorize project.company, policy_class: ConnectionPolicy
     render json: project.connections, include: :users, status: :ok
   end
 
@@ -12,7 +12,7 @@ class ConnectionsController < AuthenticatedController
     conn = Connection.find_by_id params[:connection_id]
     user = User.find_by_id params[:user_id]
 
-    authorize conn
+    authorize current_company, policy_class: ConnectionPolicy
 
     # TODO check and test this code.
     # Check the user to be added is in the same project as the connection.

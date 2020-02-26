@@ -16,20 +16,15 @@ class ConnectionPolicy < ApplicationPolicy
 
   def can_manage_connections?
 
-    if @record.is_a?(Project)
-      company_id = @record.company_id
-    elsif @record.is_a?(Connection)
-      company_id = @record.project.company_id
-    elsif @record.is_a?(Company)
-      company_id = @record.id
-    else
-      raise "Error. Incorrect type."
-    end
+    raise "Record must be a Company" unless @record.is_a?(Company)
 
-    joined_company = @user.participations.find_by(company_id: company_id)
+    joined_company = @user.participations.find_by(company_id: @record.id)
+
+    return false if joined_company.nil?
+
     permission = joined_company.connection_permission
     permission ||= joined_company.super_permission
-    !joined_company.nil? && permission
+    return permission
   end
 
 end

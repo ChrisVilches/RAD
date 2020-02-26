@@ -1,3 +1,8 @@
+# TODO
+# Since these files (with and without details) they can be put into one file
+# and then use some @show_details flag to show details or not, and conditionally
+# output the extra parts that are present in the detailed one.
+
 json.view do
   json.id @view.id
   json.project_id @view.project_id
@@ -22,7 +27,14 @@ json.view do
     json.container do
       json.partial!("container", container: query.container)
     end
-    json.connections query.connections
+
+    # Connections that are added to the query. This is needed for development
+    # but not for execution. For execution, it's needed to know these connections
+    # in addition to the ones the logged in user can execute.
+    json.connections_allowed_to_query(query.connections) do |conn|
+      json.id conn.id
+      json.name conn.name
+    end
   end
 
 end
