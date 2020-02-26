@@ -3,33 +3,24 @@ class Connection < ApplicationRecord
   has_and_belongs_to_many :users
 
   # TODO add user-defined description field to the connections table
+  # TODO also add validations and restrictions in the migration for other fields (string length, null false, etc)
 
   def execute_query(query, query_params = [], global_params = [])
+    # The following contains the actual code (final SQL code) that will
+    # be executed on the server.
     sql = query.build_sql(query_params, global_params)
 
     config = {
-      adapter: "sqlite3",
-      pool: 5,
-      timeout: 5000,
-      database: "db/test_remote_queries.sqlite3"
-    }
-
-    config = {
       adapter: "postgresql",
-      pool: 5,
+      pool: 1, # TODO Understand correctly what exactly is a pool.
       timeout: 5000,
       database: "test_remote_queries"
     }
 
-    result = []
+    result = nil
 
     with_db(config) do
-      # TODO This SQL separation is really bad.
-      # This must be able to execute multi-sentence code.
-      # There are many examples of codes that would crash if it can't.
-      sql.split(";").each do |q|
-        result = ActiveRecord::Base.connection.execute(q)
-      end
+      result = ActiveRecord::Base.connection.execute(sql)
     end
     return result
   end

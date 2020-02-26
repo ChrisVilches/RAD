@@ -25,6 +25,7 @@ class AuthenticatedController < ActionController::API
     u = User.first
     cp = u.participations.first
     pp = u.project_participations.first
+    raise "incorrect" if pp.project_id != 1
     cp.connection_permission = true
     cp.super_permission = true
     cp.project_permission = true
@@ -33,6 +34,7 @@ class AuthenticatedController < ActionController::API
     pp.develop_permission = true
     pp.publish_permission = true
     cp.save
+    pp.save
     u
   end
 
