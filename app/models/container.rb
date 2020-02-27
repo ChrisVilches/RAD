@@ -179,6 +179,16 @@ class Container < ApplicationRecord
 
       unless element_errors.empty?
         elements_with_errors << {
+          # TODO
+          # There's a huge problem here... if the developer user saves (even if he doesn't modify anything) the
+          # forms while another user is executing it, the element IDs while change
+          # and the client will get errors for different element IDs (the ID will get higher).
+          # As a result, the client won't display the error.
+          # An easy way to fix this is by having the client send the container ID or timestamp of
+          # last update, and then compare it to the last update in the backend. If the client has an
+          # outdated version, then tell the client he must refresh the page (or just refresh that container).
+          # Warning: Ensure that the timestamp or version number only changes if the thing actually changes...
+          # because updated_at gets modified by every single update, even if it doesn't update important data.
           id: element.id,
           path: i[:path],
           messages: element_errors

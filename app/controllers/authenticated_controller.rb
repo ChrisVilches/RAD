@@ -31,7 +31,7 @@ class AuthenticatedController < ActionController::API
     cp.project_permission = true
 
     pp.execution_permission = true
-    pp.develop_permission = !true
+    pp.develop_permission = true
     pp.publish_permission = true
     cp.save
     pp.save
