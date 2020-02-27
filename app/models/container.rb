@@ -171,16 +171,22 @@ class Container < ApplicationRecord
 
   def user_inputs_errors(user_inputs)
 
-    errors = Set.new
+    elements_with_errors = Set.new
 
     user_inputs.each do |i|
       element = find_element_from_path(i[:path])
-      valid_result = element.elementable.validate_input_value(i[:value])
+      element_errors = element.elementable.input_value_errors(i[:value])
 
-      errors << i[:path] unless valid_result
+      unless element_errors.empty?
+        elements_with_errors << {
+          id: element.id,
+          path: i[:path],
+          messages: element_errors
+        }
+      end
     end
 
-    return errors.to_a
+    return elements_with_errors.to_a
   end
 
   private

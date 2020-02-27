@@ -15,30 +15,37 @@ class NumericInput < Input
     [:min, :max, :placeholder, :required, :number_set, excluded_values: []]
   end
 
-  def validate_input_value(value)
+  def input_value_errors(value)
 
     super
 
-    return true if !self.required && value.nil?
-    return false if self.required && value.nil?
-    return false unless value.is_a?(Numeric)
+    return [] if !self.required && value.nil?
+
+    errors = []
+    errors << "Input is required" if self.required && value.nil?
+
+    unless value.is_a?(Numeric)
+      # The validation shouldn't continue if it's not a number
+      errors << "Value must be a number"
+      return errors
+    end
 
     value = value.to_f
     case self.number_set
     when :decimal.to_s
-      return false unless number_between_range(value)
-      return false if self.excluded_values.include?(value)
+      errors << "Value outside range" unless number_between_range(value)
+      errors << "This value cannot be used" if self.excluded_values.include?(value)
     when :integer.to_s
-      return false unless number_is_integer(value)
-      return false unless number_between_range(value)
-      return false if self.excluded_values.include?(value)
+      errors << "Value must be an integer" unless number_is_integer(value)
+      errors << "Value outside range" unless number_between_range(value)
+      errors << "This value cannot be used" if self.excluded_values.include?(value)
     when :binary.to_s
-      return false unless [0, 1].include?(value)
+      errors << "Value is not binary" unless [0, 1].include?(value)
     else
       raise "Incorrect type"
     end
 
-    return true
+    return errors
   end
 
   private

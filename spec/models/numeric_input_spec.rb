@@ -52,49 +52,49 @@ RSpec.describe NumericInput, type: :model do
 
   describe "validation against user value" do
     it "validates correctly for decimal" do
-      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(4)).to be false
-      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(2)).to be false
-      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(3.0)).to be false
-      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(3.5)).to be true
-      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(1000)).to be false
-      expect(build(:numeric_input, :decimal, min: 1, max: nil, excluded_values: [2, 3, 4]).validate_input_value(1000)).to be true
+      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(4)).to_not be_empty
+      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(2)).to_not be_empty
+      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(3.0)).to_not be_empty
+      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(3.5)).to be_empty
+      expect(build(:numeric_input, :decimal, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(1000)).to_not be_empty
+      expect(build(:numeric_input, :decimal, min: 1, max: nil, excluded_values: [2, 3, 4]).input_value_errors(1000)).to be_empty
     end
 
     it "validates correctly for integer" do
-      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(4)).to be false
-      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(4.5)).to be false
-      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(2)).to be false
-      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(3.0)).to be false
-      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(3.5)).to be false
-      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).validate_input_value(1000)).to be false
-      expect(build(:numeric_input, :integer, min: 1, max: nil, excluded_values: [2, 3, 4]).validate_input_value(1000)).to be true
-      expect(build(:numeric_input, :integer, min: nil, max: 4545, excluded_values: [2, 3, 4]).validate_input_value(-1000)).to be true
-      expect(build(:numeric_input, :integer, min: 1, max: 10).validate_input_value(5.5)).to be false
+      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(4)).to_not be_empty
+      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(4.5)).to_not be_empty
+      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(2)).to_not be_empty
+      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(3.0)).to_not be_empty
+      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(3.5)).to_not be_empty
+      expect(build(:numeric_input, :integer, min: 1, max: 4, excluded_values: [2, 3, 4]).input_value_errors(1000)).to_not be_empty
+      expect(build(:numeric_input, :integer, min: 1, max: nil, excluded_values: [2, 3, 4]).input_value_errors(1000)).to be_empty
+      expect(build(:numeric_input, :integer, min: nil, max: 4545, excluded_values: [2, 3, 4]).input_value_errors(-1000)).to be_empty
+      expect(build(:numeric_input, :integer, min: 1, max: 10).input_value_errors(5.5)).to_not be_empty
     end
 
     it "validates correctly for binary" do
-      expect(build(:numeric_input, :binary).validate_input_value(0)).to be true
-      expect(build(:numeric_input, :binary).validate_input_value(1)).to be true
-      expect(build(:numeric_input, :binary).validate_input_value(2)).to be false
-      expect(build(:numeric_input, :binary, excluded_values: [0]).validate_input_value(0)).to be true
+      expect(build(:numeric_input, :binary).input_value_errors(0)).to be_empty
+      expect(build(:numeric_input, :binary).input_value_errors(1)).to be_empty
+      expect(build(:numeric_input, :binary).input_value_errors(2)).to_not be_empty
+      expect(build(:numeric_input, :binary, excluded_values: [0]).input_value_errors(0)).to be_empty
     end
 
     it "raises an error if the input configuration itself is incorrect when testing an input value against it" do
       expect {
         num = create(:numeric_input, number_set: nil) # This is invalid
-        num.validate_input_value(3)
+        num.input_value_errors(3)
       }.to raise_error ActiveRecord::RecordInvalid
     end
 
     it "validates correctly for required/not required cases" do
-      expect(build(:numeric_input, :decimal, required: true).validate_input_value(nil)).to be false
-      expect(build(:numeric_input, :decimal, required: false).validate_input_value(nil)).to be true
+      expect(build(:numeric_input, :decimal, required: true).input_value_errors(nil)).to_not be_empty
+      expect(build(:numeric_input, :decimal, required: false).input_value_errors(nil)).to be_empty
     end
 
     it "validates correctly for inputs that are not numeric" do
-      expect(build(:numeric_input, :decimal).validate_input_value("3434")).to be false
-      expect(build(:numeric_input, :decimal).validate_input_value(true)).to be false
-      expect(build(:numeric_input, :decimal).validate_input_value(3434)).to be true
+      expect(build(:numeric_input, :decimal).input_value_errors("3434")).to_not be_empty
+      expect(build(:numeric_input, :decimal).input_value_errors(true)).to_not be_empty
+      expect(build(:numeric_input, :decimal).input_value_errors(3434)).to be_empty
     end
   end
 
@@ -106,7 +106,7 @@ RSpec.describe NumericInput, type: :model do
       expect(num.min).to be 1.2
       expect(num.max).to be 6.7
       expect(num.excluded_values).to eq [1.2, 1.6, 2.6, 2.9, 0.5]
-      num.validate_input_value(3) # This method automatically validates, and therefore runs all before_validation, etc.
+      num.input_value_errors(3) # This method automatically validates, and therefore runs all before_validation, etc.
       expect(num.min).to eq 1
       expect(num.max).to eq 6
       expect(num.excluded_values).to eq [0, 1, 2]

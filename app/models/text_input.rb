@@ -11,27 +11,31 @@ class TextInput < Input
     [:multiline, :regex, :min, :placeholder, :max, :required]
   end
 
-  def validate_input_value(value)
+  def input_value_errors(value)
 
     super
 
     nil_or_empty_string = value == nil || (value.is_a?(String) && value.strip.blank?)
 
-    return true if !self.required && nil_or_empty_string
-    return false if self.required && nil_or_empty_string
+    errors = []
 
-    return false unless value.is_a?(String)
+    return [] if !self.required && nil_or_empty_string
+    errors << "Required input" if self.required && nil_or_empty_string
+
+    errors << "Value should be a string" unless value.is_a?(String)
+
+    value = value.to_s
     value.strip!
 
     if @regex.is_a?(Regexp)
-      return false if @regex.match(value).nil?
+      errors << "Input format doesn't match the desired format" if @regex.match(value).nil?
     end
 
-    return false unless number_between_range(value)
+    errors << "Incorrect amount of characters" unless number_between_range(value)
 
-    return false if !self.multiline && TextInput.is_multiline?(value)
+    errors << "Multiline value is not allowed" if !self.multiline && TextInput.is_multiline?(value)
 
-    return true
+    return errors
   end
 
   def self.is_multiline?(str)

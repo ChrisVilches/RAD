@@ -11,10 +11,10 @@ class OptionInput < Input
     [:component_type, :required, options: [:label, :value]]
   end
 
-  def validate_input_value(list)
+  def input_value_errors(list)
 
     super
-
+    raise "This method should return Array with error strings"
     unless list.is_a?(Array)
       return false unless list.is_a?(Integer)
       list = [list]

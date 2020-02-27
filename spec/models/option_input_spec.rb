@@ -60,42 +60,42 @@ RSpec.describe OptionInput, type: :model do
     }
 
     it "validates wrong input type" do
-      expect(numbers.validate_input_value(3)).to be true
-      expect(numbers.validate_input_value("aa")).to be false
-      expect(numbers.validate_input_value(true)).to be false
-      expect(numbers.validate_input_value([1.1])).to be false
-      expect(numbers.validate_input_value(3.4)).to be false
-      expect(numbers.validate_input_value(["1"])).to be false
+      expect(numbers.input_value_errors(3)).to be true
+      expect(numbers.input_value_errors("aa")).to be false
+      expect(numbers.input_value_errors(true)).to be false
+      expect(numbers.input_value_errors([1.1])).to be false
+      expect(numbers.input_value_errors(3.4)).to be false
+      expect(numbers.input_value_errors(["1"])).to be false
     end
 
     it "validates repeated inputs (radio)" do
-      expect(numbers.validate_input_value([0, 0, 0, 0])).to be true
-      expect(numbers.validate_input_value([0, 0, 0, 1])).to be false # Should be only one
+      expect(numbers.input_value_errors([0, 0, 0, 0])).to be true
+      expect(numbers.input_value_errors([0, 0, 0, 1])).to be false # Should be only one
     end
 
     it "validates repeated inputs (checkbox)" do
       numbers.component_type = OptionInput::component_types[:checkbox]
-      expect(numbers.validate_input_value([0, 0, 0, 0])).to be true
-      expect(numbers.validate_input_value([0, 0, 0, 1])).to be true
+      expect(numbers.input_value_errors([0, 0, 0, 0])).to be true
+      expect(numbers.input_value_errors([0, 0, 0, 1])).to be true
     end
 
     it "validates inputs out of range (radio)" do
-      expect(numbers.validate_input_value([-1])).to_not be true
-      expect(numbers.validate_input_value([0, 0])).to be true
-      expect(numbers.validate_input_value([1, 1])).to be true
-      expect(numbers.validate_input_value([2, 2])).to be true
-      expect(numbers.validate_input_value([3, 3])).to be true
-      expect(numbers.validate_input_value([4, 4])).to be true
-      expect(numbers.validate_input_value([5, 5])).to be true
-      expect(numbers.validate_input_value([6, 6])).to_not be true
+      expect(numbers.input_value_errors([-1])).to_not be true
+      expect(numbers.input_value_errors([0, 0])).to be true
+      expect(numbers.input_value_errors([1, 1])).to be true
+      expect(numbers.input_value_errors([2, 2])).to be true
+      expect(numbers.input_value_errors([3, 3])).to be true
+      expect(numbers.input_value_errors([4, 4])).to be true
+      expect(numbers.input_value_errors([5, 5])).to be true
+      expect(numbers.input_value_errors([6, 6])).to_not be true
     end
 
     it "validates inputs out of range (checkbox)" do
       numbers.component_type = OptionInput::component_types[:checkbox]
-      expect(numbers.validate_input_value([-1])).to_not be true
-      expect(numbers.validate_input_value([0, 1, 2, 3, 4])).to be true
-      expect(numbers.validate_input_value([3, 4, 5])).to be true
-      expect(numbers.validate_input_value([0, 5, 6])).to_not be true
+      expect(numbers.input_value_errors([-1])).to_not be true
+      expect(numbers.input_value_errors([0, 1, 2, 3, 4])).to be true
+      expect(numbers.input_value_errors([3, 4, 5])).to be true
+      expect(numbers.input_value_errors([0, 5, 6])).to_not be true
     end
 
 
