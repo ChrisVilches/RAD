@@ -15,6 +15,12 @@ class ProjectsController < AuthenticatedController
     result[:company_permissions] = current_user.company_permissions(@project.company)
     result[:project_permissions] = current_user.project_permissions(@project)
 
+    result[:participants_count] = @project.users.count
+
+    # TODO Only show connection count if user can see them. (permissions)
+    result[:connections_count] = @project.connections.count
+    result[:views_count] = @project.views.count
+
     render json: result
   end
 
