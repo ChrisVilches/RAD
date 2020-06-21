@@ -37,7 +37,7 @@ class ConnectionsController < AuthenticatedController
     project = Project.find_by_id params[:project_id]
     conn = Connection.new(project: project)
     conn.attributes = params.permit([:user, :pass, :host, :port])
-    authorize conn
+    authorize current_company, policy_class: ConnectionPolicy
 
     if conn.save
       render json: conn, include: :users, status: :created

@@ -63,13 +63,20 @@ class QueriesController < AuthenticatedController
       result = conn.execute_query(@query, query_user_input, global_user_input)
       render json: result
 
-    rescue Query::IncorrectParams => e
+    rescue Query::IncorrectParamsError => e
       render json: {
         global_form_errors: e.global_form_errors,
         query_form_errors: e.query_form_errors
       }, status: :unprocessable_entity
 
-    rescue Query::HasParamsNotReplaced => e
+    # TODO: This contains data such as {{name}}, {{age}}, etc.
+    # In other words, stuff that only the developer should see.
+    # Note that if the developer user doesn't set an input as required,
+    # then that error is not assigned to the input, but instead to the query
+    # in general.
+    # So to summarize, the errors in e.param_names should be only displayed to
+    # developers, and not related to any input specifically.
+    rescue Query::HasParamsNotReplacedError => e
       render json: {
         param_names: e.param_names
       }, status: :internal_server_error

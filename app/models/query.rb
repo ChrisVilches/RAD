@@ -9,7 +9,7 @@ class Query < ApplicationRecord
   has_one :latest_revision, ->(query) { where(query_id: query.id).order("created_at DESC") }, class_name: QueryHistory.to_s
   validates :name, presence: true, allow_blank: false
 
-  class IncorrectParams < StandardError
+  class IncorrectParamsError < StandardError
     attr_reader :global_form_errors, :query_form_errors
 
     def initialize(global_form_errors: nil, query_form_errors: nil)
@@ -22,7 +22,7 @@ class Query < ApplicationRecord
     end
   end
 
-  class HasParamsNotReplaced < StandardError
+  class HasParamsNotReplacedError < StandardError
 
     attr_reader :param_names
 
