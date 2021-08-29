@@ -1,0 +1,1 @@
+json.last_days_activity @last_days_activity
