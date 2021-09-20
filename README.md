@@ -1,10 +1,8 @@
 # RAD
 
-(README itself is a WIP)
-
 ## Overview
 
-This is an application which purpose is to help organizations, companies, or work teams create an administration system (i.e. intranet, or internal system) without the need of implementing a UI themselves. It makes it possible to store application logic in the form of SQL queries, and then execute them in a controlled way, by specifying which users can create, publish and execute queries, which databases can be used (test, staging, production, etc) and keep an execution log or history.
+This is an application which purpose is to help organizations, companies, or work teams create an administration system (i.e. intranet, or internal system) without the need of implementing a UI themselves. It makes it possible to store application logic in the form of SQL queries, and then execute them in a controlled way, by specifying which users can create, publish and execute queries, which databases can be used (test, staging, production, etc.) and keep an execution log or history.
 
 To summarize, it works as a usual SQL client, but with teamwork capabilities.
 
@@ -20,14 +18,15 @@ In each company account, projects can be created, and these projects have a diff
 
 ### User permissions
 
-Users can have one or multiple permissions. These are:
-Execution permission: Can execute queries.
-Develop permission: Can create new queries. Usually an engineer/developer. A person with this permission cannot publish them (they remain hidden).
-Publish permission: Can publish queries that were initially developed but not published. Usually, a manager or someone who does code reviews would have this permission.
+Users may have one or multiple permissions. These are:
+
+**Execution permission:** Can execute queries.
+**Develop permission:** Can create new queries. Usually, an engineer/developer. A person with this permission cannot publish them (they remain hidden).
+**Publish permission:** Can publish queries that were initially developed but not published. Usually, a manager or someone who does code reviews would have this permission.
 
 ### Database connections
 
-Add connections to your databases. This involves entering the hostname, username, password, and other relevant data. Since the philosophy of this application is to keep it simple and flexible, if you want to limit access to your databases, you should create new database users, and limit their access by granting fewer read/write permissions, and then use those users inside the app.
+Add connections that point to your databases. This involves entering the hostname, username, password, and other relevant data. Since the philosophy of this application is to keep it simple and flexible, if you want to limit access to your databases, you should create new database users, and limit their access by granting fewer read/write permissions, and then use those users inside the app.
 
 ### Database connection permission
 
@@ -42,9 +41,11 @@ In general, the queries inside a view should be grouped in a way that makes sens
 ### Query
 
 Inside a view, one or multiple queries can be created. Each query allows the creation of a form (for user input) and also the creation of a SQL code, which is version-controlled. Once the user executes the query, the user input will be replaced in it, generating the final SQL string, which will be sent to the database server. Data will then be fetched and displayed on the screen.
-Other features
-Configure a query to be periodically executed, and/or sent the output to one or multiple user's e-mails.
-For each query, create a form (text, number, checkbox, etc.) that allows the executor user to configure how the query will be executed (e.g. fetch students where age is greater than X, and have X as a number input).
+
+### Other features
+
+* Configure a query to be periodically executed, and have the result be delivered to one or multiple users e-mails.
+* For each query, create a form (text, number, checkbox, etc.) that allows the executor user to configure how the query will be executed (e.g. fetch students where age is greater than X, and have X as a number input).
 
 ## Technologies used
 
@@ -62,4 +63,4 @@ This project is a work in progress. This document contains the specifications of
 
 Perhaps the biggest issue is deciding how to deploy this application. If it's deployed as a SaaS, there would be a massive problem communicating with the client's database. If it's an open source (free) application, then the client can deploy it in their network, and it'd be much easier to make it work.
 
-Also, being a SaaS would require an extremely high amount of storage (but might be doable depending on the number of clients, and the amount of data they have).
+A SaaS would require an extremely high amount of storage, but might be doable depending on the number of clients, and the amount of data they have.
