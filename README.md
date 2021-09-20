@@ -21,7 +21,9 @@ In each company account, projects can be created, and these projects have a diff
 Users may have one or multiple permissions. These are:
 
 **Execution permission:** Can execute queries.
+
 **Develop permission:** Can create new queries. Usually, an engineer/developer. A person with this permission cannot publish them (they remain hidden).
+
 **Publish permission:** Can publish queries that were initially developed but not published. Usually, a manager or someone who does code reviews would have this permission.
 
 ### Database connections
